@@ -12,7 +12,7 @@ export const InbwtweenApp: React.FC<InbwtweenAppProps> = (
   const getHomePage = (): JSX.Element => {
     return (
     <div>
-      <p>Site Under Contruction
+      <p>Site Under Construction
         <br />
         <i className="fas fa-tools" />
       </p>
