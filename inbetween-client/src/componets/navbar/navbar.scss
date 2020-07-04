@@ -1,0 +1,36 @@
+$nav-size: 70px;
+
+#navbar {
+  background-color: $themeColor;
+  position: relative;
+  pointer-events: none;
+  width: 100%;
+  z-index: 100;
+
+  #navbar-brand {
+    display: inline-block;
+    pointer-events: all;
+
+    #navbar-title {
+      h1 {
+        color: rgb(136, 132, 132);
+        font-size: 1.3em;
+        line-height: $nav-size;
+        margin: 0px 0px 0px 10px;
+        margin-top: 5px;
+        text-shadow: 0px 0px 5px rgba(black, 0.25);
+        text-transform: uppercase;
+        font-weight: bold;
+
+        .highlight {
+          color: white;
+          font-weight: 500;
+          padding: 12px;
+          border-radius: 10px;
+          background-color: $lightBlue;
+        }
+
+      }
+    }
+  }
+}

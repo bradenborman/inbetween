@@ -1,0 +1,7 @@
+spring:
+  thymeleaf:
+    mode: HTML
+    cache: false
+  output:
+    ansi:
+      enabled: ALWAYS

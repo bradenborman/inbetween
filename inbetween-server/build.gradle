@@ -1,0 +1,61 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.16.BUILD-SNAPSHOT'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'java'
+	id 'war'
+}
+
+group = 'borman'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenCentral()
+	maven { url 'https://repo.spring.io/milestone' }
+	maven { url 'https://repo.spring.io/snapshot' }
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+
+task copyClient(dependsOn: ":inbetween-client:clientBuild") {
+
+	doFirst {
+		delete "src/main/resources/static"
+		delete "src/main/resources/templates"
+	}
+
+	doLast {
+		copy {
+			from new File(project(":inbetween-client").getProjectDir(), "build")
+			into "${buildDir}/resources/main/static"
+		}
+		copy {
+			from new File(project(":inbetween-client").getProjectDir(), "build/index.html")
+			into "${buildDir}/resources/main/templates"
+		}
+		copy {
+			from new File(project(":inbetween-client").getProjectDir(), "build")
+			into "src/main/resources/static"
+		}
+		copy {
+			from new File(project(":inbetween-client").getProjectDir(), "build/index.html")
+			into "src/main/resources/templates"
+		}
+	}
+}
+
+task finalizeBuild(type: Copy, dependsOn: build) {
+	from "${buildDir}/libs/server-${version}.war"
+	into "${buildDir}/libs"
+	rename "server-${version}.war", "inbetween.war"
+}
+
+bootWar.dependsOn(copyClient)
+clean.dependsOn(":inbetween-client:clientClean")
+build.finalizedBy(finalizeBuild)
