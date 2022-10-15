@@ -1,8 +1,7 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.16.BUILD-SNAPSHOT'
-	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'org.springframework.boot' version '2.6.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'java'
-	id 'war'
 }
 
 group = 'borman'
@@ -18,7 +17,9 @@ repositories {
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	implementation 'com.h2database:spring-boot-starter-web'
+	implementation 'com.h2database:h2:1.3.164'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
@@ -51,12 +52,12 @@ task copyClient(dependsOn: ":inbetween-client:clientBuild") {
 }
 
 task finalizeBuild(type: Copy, dependsOn: build) {
-	from "${buildDir}/libs/server-${version}.war"
+	from "${buildDir}/libs/server-${version}.jar"
 	into "${buildDir}/libs"
-	rename "server-${version}.war", "inbetween.war"
+	rename "server-${version}.jar", "inbetween.jar"
 }
 
-bootWar.dependsOn(copyClient)
+bootJar.dependsOn(copyClient)
 clean.dependsOn(":inbetween-client:clientClean")
 build.finalizedBy(finalizeBuild)
 
