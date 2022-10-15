@@ -6,6 +6,8 @@ yarn-error.log
 yarn.lock
 *build/
 
+inbetween-server/src/main/resources/static
+inbetween-server/src/main/resources/templates
 
 .gradle
 build/

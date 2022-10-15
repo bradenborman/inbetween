@@ -6,7 +6,12 @@ spring:
     ansi:
       enabled: ALWAYS
   datasource:
-    url: jdbc:h2:mem:mydb
+    url: jdbc:h2:mem:in-between
     username: sa
-    password: password
+    password:
     driverClassName: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
