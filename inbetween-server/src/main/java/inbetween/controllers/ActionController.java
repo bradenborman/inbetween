@@ -28,12 +28,12 @@ public class ActionController {
                 .filter(x -> x.hasWork(action.name()))
                 .findFirst();
 
-        if (actionToPerform.isPresent()) {
-            actionToPerform.get().perform(actionRequest);
-            return ResponseEntity.ok().build();
+        if (!actionToPerform.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        actionToPerform.get().perform(actionRequest);
+        return ResponseEntity.ok().build();
     }
 
 }

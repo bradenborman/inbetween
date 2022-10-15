@@ -38,8 +38,6 @@ public class BetGameAction implements GameAction {
             logger.info(betResult.toString());
 
 
-            gameService.advanceToNextPlayersTurn(actionRequest.getGameId());
-
             //TODO return the middleCard to be displayed along with results of the bet
         }
     }

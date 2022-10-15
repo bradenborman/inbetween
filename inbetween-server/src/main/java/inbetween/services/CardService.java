@@ -45,4 +45,8 @@ public class CardService {
         return betResult;
 
     }
+
+    public void clearMiddleCard(int gameId) {
+        cardDao.clearCard(gameId, PlayingCardColumnName.MIDDLE);
+    }
 }

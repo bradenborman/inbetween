@@ -13,9 +13,12 @@ public class GameService {
         this.gameDao = gameDao;
     }
 
-    public void advanceToNextPlayersTurn(int gameId) {
+    public String advanceToNextPlayersTurn(int gameId) {
         //TODO
+        //Update order in DB
+        //return the next one up
 
+        return "BRENT";
     }
 
 }
