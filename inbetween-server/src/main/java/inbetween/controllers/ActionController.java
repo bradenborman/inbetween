@@ -23,17 +23,17 @@ public class ActionController {
     }
 
     @PostMapping("/perform:{action}")
-    public ResponseEntity<Object> performAction(@PathVariable UserGameAction action, @RequestBody ActionRequest actionRequest) {
+    public ResponseEntity<?> performAction(@PathVariable UserGameAction action, @RequestBody ActionRequest actionRequest) {
         Optional<GameAction> actionToPerform = gameActions.stream()
-                .filter(x -> x.hasWork(action.name()))
+                .filter(x -> x.hasWork(action))
                 .findFirst();
 
         if (!actionToPerform.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
 
-        actionToPerform.get().perform(actionRequest);
-        return ResponseEntity.ok().build();
+        return actionToPerform.get()
+                .perform(actionRequest);
     }
 
 }

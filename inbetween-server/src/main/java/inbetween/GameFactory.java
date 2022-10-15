@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,12 +33,6 @@ public class GameFactory {
         cardDao.insertDeck(gameId, initializeNewDeck());
         cardDao.initGameTable(gameId);
         return gameId;
-    }
-
-    //TODO part time
-    @PostConstruct
-    public void run() {
-        int gameId = createNewGame();
     }
 
     public CardTable getCardTableDetails(int gameId) {

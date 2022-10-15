@@ -22,7 +22,7 @@ public class BetResultUtility {
         BetResult result = new BetResult();
         result.setMiddleCard(middle);
 
-        if (leftValue < middleValue && rightValue > middleValue) {
+        if ((leftValue < middleValue && rightValue > middleValue) || (rightValue < middleValue && leftValue > middleValue)) {
             logger.debug("Winning Bet!");
             result.setWonBet(true);
             result.setAmountShifted(wagerAmount * 2);

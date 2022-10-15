@@ -22,3 +22,12 @@ create table IF NOT EXISTS GAME_TABLE (
   middle_card varchar(16),
   FOREIGN KEY (game_id) REFERENCES GAME(game_id)
 );
+
+create table IF NOT EXISTS PLAYERS (
+  player_Id bigint auto_increment,
+  display_name varchar(64) NOT NULL,
+  game_joined bigint NOT NULL,
+  playing_status varchar(16) NOT NULL,
+  is_players_turn TINYINT NOT NULL DEFAULT 0,
+  FOREIGN KEY (game_joined) REFERENCES GAME(game_id)
+);

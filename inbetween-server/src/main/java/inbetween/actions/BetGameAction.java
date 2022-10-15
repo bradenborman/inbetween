@@ -8,6 +8,7 @@ import inbetween.services.CardService;
 import inbetween.services.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,12 +25,12 @@ public class BetGameAction implements GameAction {
     }
 
     @Override
-    public boolean hasWork(String actionString) {
-        return UserGameAction.BET == UserGameAction.valueOf(actionString);
+    public boolean hasWork(UserGameAction gameAction) {
+        return UserGameAction.BET == gameAction;
     }
 
     @Override
-    public void perform(ActionRequest actionRequest) {
+    public ResponseEntity<?> perform(ActionRequest actionRequest) {
         if (actionRequest instanceof BetActionRequest) {
 
             BetActionRequest betActionRequest = (BetActionRequest) actionRequest;
@@ -40,5 +41,7 @@ public class BetGameAction implements GameAction {
 
             //TODO return the middleCard to be displayed along with results of the bet
         }
+
+        return ResponseEntity.ok().build();
     }
 }

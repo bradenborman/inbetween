@@ -23,6 +23,18 @@ class BetResultUtilityTest {
     }
 
     @Test
+    void deriveBetResultWinningBet2Test() {
+        BetResult results = BetResultUtility.deriveBetResult(
+                new PlayingCard(CardValue.KING, CardSuite.DIAMONDS),
+                new PlayingCard(CardValue.EIGHT, CardSuite.SPADES),
+                new PlayingCard(CardValue.JACK, CardSuite.HEARTS),
+                50);
+
+        Assertions.assertTrue(results.isWonBet());
+        Assertions.assertEquals(100, results.getAmountShifted());
+    }
+
+    @Test
     void deriveBetResultLosingBetTest() {
         BetResult results = BetResultUtility.deriveBetResult(
                 new PlayingCard(CardValue.TWO, CardSuite.HEARTS),

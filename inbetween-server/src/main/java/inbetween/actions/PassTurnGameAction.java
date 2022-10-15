@@ -4,6 +4,7 @@ import inbetween.models.actions.ActionRequest;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -18,12 +19,12 @@ public class PassTurnGameAction implements GameAction {
     }
 
     @Override
-    public boolean hasWork(String actionString) {
-        return UserGameAction.PASS_TURN == UserGameAction.valueOf(actionString);
+    public boolean hasWork(UserGameAction gameAction) {
+        return UserGameAction.PASS_TURN == gameAction;
     }
 
     @Override
-    public void perform(ActionRequest actionRequest) {
+    public ResponseEntity<?> perform(ActionRequest actionRequest) {
         //Update the side cards
         cardService.revealTwoNewSideCards(actionRequest.getGameId());
 
@@ -31,6 +32,8 @@ public class PassTurnGameAction implements GameAction {
         String idOfNextPlayer = gameService.advanceToNextPlayersTurn(actionRequest.getGameId());
 
         //TODO send results via websocket
+
+        return ResponseEntity.ok().build();
     }
 
 }
