@@ -3,12 +3,14 @@ package inbetween.actions;
 import inbetween.models.BetResult;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.actions.BetActionRequest;
-import inbetween.models.enums.UserGameActions;
+import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
+@Component
 public class BetGameAction implements GameAction {
 
     private static final Logger logger = LoggerFactory.getLogger(BetGameAction.class);
@@ -23,7 +25,7 @@ public class BetGameAction implements GameAction {
 
     @Override
     public boolean hasWork(String actionString) {
-        return UserGameActions.BET == UserGameActions.valueOf(actionString);
+        return UserGameAction.BET == UserGameAction.valueOf(actionString);
     }
 
     @Override

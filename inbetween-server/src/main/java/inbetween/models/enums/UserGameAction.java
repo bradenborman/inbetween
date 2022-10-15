@@ -1,6 +1,6 @@
 package inbetween.models.enums;
 
-public enum UserGameActions {
+public enum UserGameAction {
 
     CREATE_LOBBY,
     JOIN_LOBBY,

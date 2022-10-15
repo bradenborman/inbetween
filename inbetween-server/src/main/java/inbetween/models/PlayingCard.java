@@ -37,4 +37,13 @@ public class PlayingCard {
     public void setSuit(CardSuite suit) {
         this.suit = suit;
     }
+
+    @Override
+    public String toString() {
+        return "PlayingCard{" +
+                "cardId='" + cardId + '\'' +
+                ", cardValue=" + cardValue +
+                ", suit=" + suit +
+                '}';
+    }
 }

@@ -2,6 +2,7 @@ package inbetween.models.actions;
 
 public class BetActionRequest extends ActionRequest {
 
+
     private String userBetting;
     private int wagerAmount;
 

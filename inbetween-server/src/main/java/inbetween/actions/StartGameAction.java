@@ -3,11 +3,11 @@ package inbetween.actions;
 import inbetween.daos.GameDao;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.enums.GameStatus;
-import inbetween.models.enums.UserGameActions;
+import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-@Service
+@Component
 public class StartGameAction implements GameAction {
 
     private final CardService cardService;
@@ -21,7 +21,7 @@ public class StartGameAction implements GameAction {
 
     @Override
     public boolean hasWork(String actionString) {
-        return UserGameActions.START_GAME == UserGameActions.valueOf(actionString);
+        return UserGameAction.START_GAME == UserGameAction.valueOf(actionString);
     }
 
     @Override

@@ -20,6 +20,7 @@ public class BetResultUtility {
         int rightValue = right.getCardValue().getValue();
 
         BetResult result = new BetResult();
+        result.setMiddleCard(middle);
 
         if (leftValue < middleValue && rightValue > middleValue) {
             logger.debug("Winning Bet!");

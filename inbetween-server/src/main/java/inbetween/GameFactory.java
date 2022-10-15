@@ -1,7 +1,9 @@
 package inbetween;
 
 import inbetween.daos.CardDao;
-import inbetween.models.*;
+import inbetween.models.CardTable;
+import inbetween.models.Deck;
+import inbetween.models.PlayingCard;
 import inbetween.models.enums.CardSuite;
 import inbetween.models.enums.CardValue;
 import inbetween.models.enums.PlayingCardColumnName;
@@ -10,8 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Repository
 public class GameFactory {
@@ -30,13 +33,6 @@ public class GameFactory {
         int gameId = cardDao.initNewGame();
         cardDao.insertDeck(gameId, initializeNewDeck());
         cardDao.initGameTable(gameId);
-
-
-        //Could pull out load side/card logic into UserGameActions.START_GAME
-        Stream.of(PlayingCardColumnName.LEFT, PlayingCardColumnName.RIGHT)
-                .forEach(columnName -> cardDao.loadCardToBoard(gameId, columnName, cardDao.drawNextCard(gameId)));
-        //end load card table
-
         return gameId;
     }
 
@@ -44,8 +40,6 @@ public class GameFactory {
     @PostConstruct
     public void run() {
         int gameId = createNewGame();
-        CardTable cardTable = getCardTableDetails(gameId);
-        logger.info("GameId: {}", cardTable.getGameId());
     }
 
     public CardTable getCardTableDetails(int gameId) {

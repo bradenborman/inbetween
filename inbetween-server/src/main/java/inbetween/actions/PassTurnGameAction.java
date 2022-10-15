@@ -1,10 +1,12 @@
 package inbetween.actions;
 
 import inbetween.models.actions.ActionRequest;
-import inbetween.models.enums.UserGameActions;
+import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
+import org.springframework.stereotype.Component;
 
+@Component
 public class PassTurnGameAction implements GameAction {
 
     private final CardService cardService;
@@ -17,7 +19,7 @@ public class PassTurnGameAction implements GameAction {
 
     @Override
     public boolean hasWork(String actionString) {
-        return UserGameActions.PASS_TURN == UserGameActions.valueOf(actionString);
+        return UserGameAction.PASS_TURN == UserGameAction.valueOf(actionString);
     }
 
     @Override

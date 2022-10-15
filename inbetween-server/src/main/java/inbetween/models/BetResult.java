@@ -2,10 +2,11 @@ package inbetween.models;
 
 public class BetResult {
 
-
     private int amountShifted;
     private boolean wonBet;
     private boolean penaltyApplied;
+
+    private PlayingCard middleCard;
 
     public int getAmountShifted() {
         return amountShifted;
@@ -31,12 +32,21 @@ public class BetResult {
         this.penaltyApplied = penaltyApplied;
     }
 
+    public PlayingCard getMiddleCard() {
+        return middleCard;
+    }
+
+    public void setMiddleCard(PlayingCard middleCard) {
+        this.middleCard = middleCard;
+    }
+
     @Override
     public String toString() {
         return "BetResult{" +
                 "amountShifted=" + amountShifted +
                 ", wonBet=" + wonBet +
                 ", penaltyApplied=" + penaltyApplied +
+                ", middleCard=" + middleCard +
                 '}';
     }
 }
