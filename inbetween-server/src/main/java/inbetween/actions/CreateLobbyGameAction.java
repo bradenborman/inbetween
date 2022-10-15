@@ -1,5 +1,6 @@
 package inbetween.actions;
 
+import inbetween.models.LobbyCreatedResponse;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.actions.CreateLobbyActionRequest;
 import inbetween.models.enums.UserGameAction;
@@ -31,12 +32,12 @@ public class CreateLobbyGameAction implements GameAction {
         if (actionRequest instanceof CreateLobbyActionRequest) {
             CreateLobbyActionRequest createLobbyActionRequest = (CreateLobbyActionRequest) actionRequest;
 
-            int gameLobbyCreated = gameService.createNewLobby();
 
-            logger.info("Player {} created lobby: {}", createLobbyActionRequest.getDisplayName(), gameLobbyCreated);
+            LobbyCreatedResponse createdResponse = gameService.createNewLobbyAndInsertPlayer(createLobbyActionRequest.getDisplayName(), createLobbyActionRequest.getUserRole());
+            logger.info("Player {} created lobby: {}", createLobbyActionRequest.getDisplayName(), createdResponse.getGameId());
 
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(gameLobbyCreated);
+                    .body(createdResponse);
         }
 
         return ResponseEntity.badRequest().build();

@@ -4,6 +4,7 @@ import inbetween.models.actions.ActionRequest;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
+import inbetween.services.NextTurnMessagingService;
 import org.springframework.http.ResponseEntity;
 
 public class AcknowledgeResultAction implements GameAction {
@@ -11,9 +12,12 @@ public class AcknowledgeResultAction implements GameAction {
     private final CardService cardService;
     private final GameService gameService;
 
-    public AcknowledgeResultAction(CardService cardService, GameService gameService) {
+    private final NextTurnMessagingService nextTurnMessagingService;
+
+    public AcknowledgeResultAction(CardService cardService, GameService gameService, NextTurnMessagingService nextTurnMessagingService) {
         this.cardService = cardService;
         this.gameService = gameService;
+        this.nextTurnMessagingService = nextTurnMessagingService;
     }
 
     @Override
@@ -29,6 +33,9 @@ public class AcknowledgeResultAction implements GameAction {
 
 
         String idOfNextPlayer = gameService.advanceToNextPlayersTurn(actionRequest.getGameId());
+
+        nextTurnMessagingService.sendNextTurnUpdate();
+
 
         return ResponseEntity.ok().build();
     }

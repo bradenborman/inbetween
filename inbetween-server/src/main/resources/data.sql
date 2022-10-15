@@ -27,7 +27,8 @@ create table IF NOT EXISTS PLAYERS (
   player_Id bigint auto_increment,
   display_name varchar(64) NOT NULL,
   game_joined bigint NOT NULL,
-  playing_status varchar(16) NOT NULL,
+  playing_role varchar(16) NOT NULL,
   is_players_turn TINYINT NOT NULL DEFAULT 0,
+  score INT NOT NULL DEFAULT 100,
   FOREIGN KEY (game_joined) REFERENCES GAME(game_id)
 );
