@@ -2,6 +2,7 @@ package inbetween.controllers;
 
 
 import inbetween.models.JoinableGame;
+import inbetween.services.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,18 +15,15 @@ import java.util.List;
 @RequestMapping("/api")
 public class ApiController {
 
+    private final GameService gameService;
+
+    public ApiController(GameService gameService) {
+        this.gameService = gameService;
+    }
+
     @GetMapping("/joinable-games")
     public ResponseEntity<List<JoinableGame>> joinableGames() {
-        JoinableGame jg = new JoinableGame();
-        jg.setGameId("1");
-        jg.setLobbyName("Nerds");
-
-        JoinableGame jg1 = new JoinableGame();
-        jg1.setGameId("2");
-        jg1.setLobbyName("Commanders");
-
-        List<JoinableGame> games = Arrays.asList(jg, jg1);
-
+        List<JoinableGame> games = gameService.findAllJoinableGames();
         return ResponseEntity.ok(games);
     }
 

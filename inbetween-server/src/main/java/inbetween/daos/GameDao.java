@@ -1,5 +1,6 @@
 package inbetween.daos;
 
+import inbetween.models.JoinableGame;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.UserRole;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,5 +69,20 @@ public class GameDao {
         parameters.addValue("gameId", gameId);
         parameters.addValue("amountShifted", amountShifted);
         namedParameterJdbcTemplate.update("UPDATE GAME_TABLE SET pot_value = (pot_value + :amountShifted) WHERE GAME_ID = :gameId", parameters);
+    }
+
+    public List<JoinableGame> findAllJoinableGames() {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("status", GameStatus.OPEN.name());
+        return namedParameterJdbcTemplate.query("SELECT * FROM GAME WHERE game_status = :status order by game_id desc", parameters,
+                (rs, num) -> {
+                    JoinableGame game = new JoinableGame();
+                    game.setGameId(rs.getString("game_id"));
+                    game.setLobbyName(rs.getString("game_name"));
+                    game.setLobbyName(rs.getString("game_name"));
+                    game.setGameStatus(GameStatus.valueOf(rs.getString("game_status")));
+                    return game;
+                }
+        );
     }
 }

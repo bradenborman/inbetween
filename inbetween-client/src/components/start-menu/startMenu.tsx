@@ -40,17 +40,18 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
     return joinAbleGameResponse?.map((x, index) => (
       <tr key={index}>
         <td>{x.lobbyName}</td>
+        <td>{x.gameStatus}</td>
       </tr>
     ));
   }, [joinAbleGameResponse]);
 
   return (
-    <>
+    <div id="start-menu">
       <h2>Lobbies to join</h2>
       <table>
         <thead></thead>
         <tbody>{gameSelections}</tbody>
       </table>
-    </>
+    </div>
   );
 };

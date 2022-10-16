@@ -24,5 +24,11 @@ public class JoinableGame {
         this.lobbyName = lobbyName;
     }
 
+    public GameStatus getGameStatus() {
+        return gameStatus;
+    }
 
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
 }

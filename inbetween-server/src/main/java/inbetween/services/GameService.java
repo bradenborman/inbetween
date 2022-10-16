@@ -15,6 +15,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class GameService {
 
@@ -47,6 +49,7 @@ public class GameService {
         JoinableGame joinableGame = new JoinableGame();
         joinableGame.setLobbyName(lobbyName);
         joinableGame.setGameId(String.valueOf(gameId));
+        joinableGame.setGameStatus(GameStatus.OPEN);
 
         simpMessagingTemplate.convertAndSend("/topic/new-lobby", joinableGame);
 
@@ -77,4 +80,7 @@ public class GameService {
         gameDao.applyScoreChangeToGamesPot(betActionRequest.getGameId(), (amountShifted) * -1);
     }
 
+    public List<JoinableGame> findAllJoinableGames() {
+        return gameDao.findAllJoinableGames();
+    }
 }
