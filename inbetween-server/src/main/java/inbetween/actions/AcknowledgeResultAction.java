@@ -1,12 +1,15 @@
 package inbetween.actions;
 
+import inbetween.models.actions.AcknowledgeResultActionRequest;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
 import inbetween.services.NextTurnMessagingService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AcknowledgeResultAction implements GameAction {
 
     private final CardService cardService;
@@ -28,13 +31,11 @@ public class AcknowledgeResultAction implements GameAction {
     @Override
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
 
-        cardService.revealTwoNewSideCards(actionRequest.getGameId());
-        cardService.clearMiddleCard(actionRequest.getGameId());
-
-
-
-        nextTurnMessagingService.updateNextTurnAndSendMessage(actionRequest.getGameId());
-
+        if (actionRequest instanceof AcknowledgeResultActionRequest) {
+            cardService.revealTwoNewSideCards(actionRequest.getGameId());
+            cardService.clearMiddleCard(actionRequest.getGameId());
+            nextTurnMessagingService.updateNextTurnAndSendMessage(actionRequest.getGameId());
+        }
 
         return ResponseEntity.ok().build();
     }

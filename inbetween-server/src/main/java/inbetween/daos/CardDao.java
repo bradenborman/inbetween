@@ -106,8 +106,7 @@ public class CardDao {
     }
 
     public void clearCard(int gameId, PlayingCardColumnName columnName) {
-        String sql = "UPDATE GAME_TABLE set " + columnName + " = null " +
-                "WHERE QUEUED_CARDS .GAME_ID = :gameId";
+        String sql = "UPDATE GAME_TABLE set " + columnName.getColumnName() + " = null WHERE game_id = :gameId";
         MapSqlParameterSource gameIdParams = new MapSqlParameterSource();
         gameIdParams.addValue("gameId", gameId);
         namedParameterJdbcTemplate.update(sql, gameIdParams);

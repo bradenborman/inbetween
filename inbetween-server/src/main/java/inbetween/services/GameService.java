@@ -43,8 +43,9 @@ public class GameService {
         return lobbyCreatedResponse;
     }
 
-    public int joinLobbyWithPlayer(int gameLobbyCreated, String displayName, UserRole userRole, boolean isPlayersTurn) {
-        return gameDao.joinLobbyWithPlayer(gameLobbyCreated, displayName, userRole, isPlayersTurn);
+    public int joinLobbyWithPlayer(int gameLobby, String displayName, UserRole userRole, boolean isPlayersTurn) {
+        logger.info("{} is joining {}", displayName, gameLobby);
+        return gameDao.joinLobbyWithPlayer(gameLobby, displayName, userRole, isPlayersTurn);
     }
 
     public void updateGameStatus(int gameId, GameStatus gameStatus) {

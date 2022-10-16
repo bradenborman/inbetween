@@ -40,14 +40,9 @@ public class CardService {
         PlayingCard playingCardM = cardDao.drawNextCard(gameId);
         cardDao.loadCardToBoard(gameId, PlayingCardColumnName.MIDDLE, playingCardM);
 
-        BetResult betResult = BetResultUtility.deriveBetResult(
+        return BetResultUtility.deriveBetResult(
                 playingCardL, playingCardR, playingCardM, betActionRequest.getWagerAmount()
         );
-
-        logger.info("Bet Result: {}", betResult.toString());
-
-        return betResult;
-
     }
 
     public void clearMiddleCard(int gameId) {

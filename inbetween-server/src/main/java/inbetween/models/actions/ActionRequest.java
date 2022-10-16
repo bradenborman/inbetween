@@ -11,7 +11,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                 @JsonSubTypes.Type(value = CreateLobbyActionRequest.class),
                 @JsonSubTypes.Type(value = StartGameActionRequest.class),
                 @JsonSubTypes.Type(value = AcknowledgeResultActionRequest.class),
-                @JsonSubTypes.Type(value = PassTurnActionRequest.class)
+                @JsonSubTypes.Type(value = PassTurnActionRequest.class),
+                @JsonSubTypes.Type(value = JoinLobbyActionRequest.class),
         })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)

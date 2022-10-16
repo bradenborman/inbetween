@@ -36,7 +36,10 @@ public class NextTurnMessagingService {
 
         List<Player> playerListAfterUpdate = userDao.selectPlayersFromGame(gameId);
         nextTurnMessage.setPlayerTurnOrder(NextTurnUtility.sortForNextTurn(playerListAfterUpdate));
+
+        //TODO -these
         nextTurnMessage.setMaxBidAllowed(50);
+        nextTurnMessage.setCardsLeftUntilReshuffle(30);
 
         //Send Message to everyone
     }

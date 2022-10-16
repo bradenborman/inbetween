@@ -6,6 +6,7 @@ public class NextTurnMessage {
 
     private List<Player> playerTurnOrder;
     private int maxBidAllowed;
+    private int cardsLeftUntilReshuffle;
 
     public List<Player> getPlayerTurnOrder() {
         return playerTurnOrder;
@@ -21,5 +22,13 @@ public class NextTurnMessage {
 
     public void setMaxBidAllowed(int maxBidAllowed) {
         this.maxBidAllowed = maxBidAllowed;
+    }
+
+    public int getCardsLeftUntilReshuffle() {
+        return cardsLeftUntilReshuffle;
+    }
+
+    public void setCardsLeftUntilReshuffle(int cardsLeftUntilReshuffle) {
+        this.cardsLeftUntilReshuffle = cardsLeftUntilReshuffle;
     }
 }

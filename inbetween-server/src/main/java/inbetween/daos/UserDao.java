@@ -53,6 +53,6 @@ public class UserDao {
         MapSqlParameterSource parameters2 = new MapSqlParameterSource();
         parameters2.addValue("gameId", gameId);
         parameters2.addValue("playerId", player.getUserId());
-        namedParameterJdbcTemplate.update("UPDATE PLAYERS SET is_players_turn = true WHERE game_joined = :gameId AND player_Id = :playerId", parameters);
+        namedParameterJdbcTemplate.update("UPDATE PLAYERS SET is_players_turn = true WHERE game_joined = :gameId AND player_Id = :playerId", parameters2);
     }
 }
