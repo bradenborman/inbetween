@@ -1,9 +1,5 @@
-import "@babel/polyfill";
-import "url-search-params-polyfill";
-
 import React from "react";
 import ReactDOM from "react-dom";
-import { InbwtweenApp } from "./componets/application/inbwtweenApp";
+import { App } from "./components/app/app";
 
-
-ReactDOM.render(<InbwtweenApp />, document.getElementById("root"));
+ReactDOM.render(<App />, document.getElementById("root"));

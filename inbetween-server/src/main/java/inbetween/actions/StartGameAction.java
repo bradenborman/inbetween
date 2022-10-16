@@ -34,7 +34,7 @@ public class StartGameAction implements GameAction {
             gameService.setDefaultAnteForGameByPlayerCount(actionRequest.getGameId());
 
             //Update game status to in session from open
-            gameService.updateGameStatus(actionRequest.getGameId(), GameStatus.IN_SESSION);
+            gameService.updateGameStatusAndSendMessage(actionRequest.getGameId(), GameStatus.IN_SESSION);
         }
         return ResponseEntity.ok().build();
     }

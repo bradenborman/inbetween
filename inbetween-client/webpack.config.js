@@ -46,22 +46,22 @@ const config = {
     }),
     new CopyWebpackPlugin([
       { from: "src/img", to: "img" },
-      { from: "src/lib/fonts", to: "fonts" },
-      { from: "src/lib/webfonts", to: "webfonts" },
-      {
-        from: "src/lib/font-awesome-v5.10.2.min.css",
-        to: "lib/font-awesome-v5.10.2.min.css",
-      },
-      {
-        from: "src/lib/jsoneditor.min.css",
-        to: "lib/jsoneditor.min.css",
-      },
-      {
-        from: "src/lib/img",
-        to: "lib/img",
-      }
-    ]),
+      { from: "src/error.html", to: "" }
+      // { from: "src/login.html", to: "" }
+      // { from: "src/lib/fonts", to: "fonts" },
+      // { from: "src/lib/webfonts", to: "webfonts" },
+      // {
+      //   from: "src/lib/font-awesome-v5.10.2.min.css",
+      //   to: "lib/font-awesome-v5.10.2.min.css"
+      // }
+    ])
   ]
+};
+
+config.node = {
+  fs: "empty",
+  net: "empty",
+  tls: "empty"
 };
 
 if (isProd) {
@@ -73,7 +73,7 @@ if (isProd) {
   config.plugins.push(
     new MiniCssExtractPlugin({
       filename: "index.[hash].css",
-      chunkFilename: "[id].[hash].css",
+      chunkFilename: "[id].[hash].css"
     })
   );
 } else {

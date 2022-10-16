@@ -10,6 +10,7 @@ import inbetween.models.enums.UserRole;
 import inbetween.utilities.DeckUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,11 +22,13 @@ public class GameService {
     private final GameDao gameDao;
     private final CardDao cardDao;
     private final UserDao userDao;
+    private final SimpMessagingTemplate simpMessagingTemplate;
 
-    public GameService(GameDao gameDao, CardDao cardDao, UserDao userDao) {
+    public GameService(GameDao gameDao, CardDao cardDao, UserDao userDao, SimpMessagingTemplate simpMessagingTemplate) {
         this.gameDao = gameDao;
         this.cardDao = cardDao;
         this.userDao = userDao;
+        this.simpMessagingTemplate = simpMessagingTemplate;
     }
 
     @Transactional
@@ -40,6 +43,8 @@ public class GameService {
         lobbyCreatedResponse.setGameId(gameId);
         lobbyCreatedResponse.setUserPlayingOnScreenId(playerId);
 
+        simpMessagingTemplate.convertAndSend("/topic/lobbies", displayName);
+
         return lobbyCreatedResponse;
     }
 
@@ -48,9 +53,11 @@ public class GameService {
         return gameDao.joinLobbyWithPlayer(gameLobby, displayName, userRole, isPlayersTurn);
     }
 
-    public void updateGameStatus(int gameId, GameStatus gameStatus) {
+    public void updateGameStatusAndSendMessage(int gameId, GameStatus gameStatus) {
         logger.info("Updating game status to: {} in lobby {}", gameStatus.name(), gameId);
         gameDao.updateGameStatus(gameId, gameStatus);
+
+        //TODO
     }
 
     public void setDefaultAnteForGameByPlayerCount(int gameId) {
