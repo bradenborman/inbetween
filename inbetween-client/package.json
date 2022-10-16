@@ -1,7 +1,7 @@
 {
-  "name": "water-bets-client",
+  "name": "inbetween-client",
   "version": "1.0.0",
-  "description": "UI for Water Bets",
+  "description": "UI for Inbetween Poker",
   "main": "index.js",
   "scripts": {
     "start": "webpack-dev-server --mode development --open --hot",

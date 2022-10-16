@@ -56,6 +56,10 @@ task copyClient(dependsOn: ":inbetween-client:clientBuild") {
 	}
 }
 
+jar {
+	enabled = false
+}
+
 task finalizeBuild(type: Copy, dependsOn: build) {
 	from "${buildDir}/libs/server-${version}.jar"
 	into "${buildDir}/libs"
