@@ -1,6 +1,7 @@
 package inbetween.actions;
 
 import inbetween.models.actions.ActionRequest;
+import inbetween.models.actions.PassTurnActionRequest;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
 import inbetween.services.GameService;
@@ -29,13 +30,13 @@ public class PassTurnGameAction implements GameAction {
 
     @Override
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
-        //Update the side cards
-        cardService.revealTwoNewSideCards(actionRequest.getGameId());
 
-        //TODO update to next persons turn
-        String idOfNextPlayer = gameService.advanceToNextPlayersTurn(actionRequest.getGameId());
+        if (actionRequest instanceof PassTurnActionRequest) {
+            //Update the side cards
+            cardService.revealTwoNewSideCards(actionRequest.getGameId());
 
-        nextTurnMessagingService.sendNextTurnUpdate();
+            nextTurnMessagingService.updateNextTurnAndSendMessage(actionRequest.getGameId());
+        }
 
         return ResponseEntity.ok().build();
     }

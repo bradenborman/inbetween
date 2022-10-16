@@ -7,12 +7,16 @@ import inbetween.models.PlayingCard;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.PlayingCardColumnName;
 import inbetween.utilities.BetResultUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Stream;
 
 @Service
 public class CardService {
+
+    private static final Logger logger = LoggerFactory.getLogger(CardService.class);
 
     private final UserDao userDao;
     private final CardDao cardDao;
@@ -40,7 +44,7 @@ public class CardService {
                 playingCardL, playingCardR, playingCardM, betActionRequest.getWagerAmount()
         );
 
-        userDao.applyWinnings(betActionRequest.getUserBetting(), gameId, betResult.getAmountShifted());
+        logger.info("Bet Result: {}", betResult.toString());
 
         return betResult;
 

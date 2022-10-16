@@ -25,7 +25,7 @@ public class BetResultUtility {
         if ((leftValue < middleValue && rightValue > middleValue) || (rightValue < middleValue && leftValue > middleValue)) {
             logger.debug("Winning Bet!");
             result.setWonBet(true);
-            result.setAmountShifted(wagerAmount * 2);
+            result.setAmountShifted(wagerAmount);
 
         } else if (leftValue == middleValue || rightValue == middleValue) {
             logger.debug("Lost the Bet! Hit on the edge");

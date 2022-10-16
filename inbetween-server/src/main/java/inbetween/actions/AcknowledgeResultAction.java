@@ -32,9 +32,8 @@ public class AcknowledgeResultAction implements GameAction {
         cardService.clearMiddleCard(actionRequest.getGameId());
 
 
-        String idOfNextPlayer = gameService.advanceToNextPlayersTurn(actionRequest.getGameId());
 
-        nextTurnMessagingService.sendNextTurnUpdate();
+        nextTurnMessagingService.updateNextTurnAndSendMessage(actionRequest.getGameId());
 
 
         return ResponseEntity.ok().build();

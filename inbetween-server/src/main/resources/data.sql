@@ -20,6 +20,7 @@ create table IF NOT EXISTS GAME_TABLE (
   left_card varchar(16),
   right_card varchar(16),
   middle_card varchar(16),
+  pot_value INT,
   FOREIGN KEY (game_id) REFERENCES GAME(game_id)
 );
 

@@ -1,11 +1,11 @@
 package inbetween.actions;
 
-import inbetween.daos.GameDao;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.actions.StartGameActionRequest;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.CardService;
+import inbetween.services.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -13,12 +13,11 @@ import org.springframework.stereotype.Component;
 public class StartGameAction implements GameAction {
 
     private final CardService cardService;
-    private final GameDao gameDao;
+    private final GameService gameService;
 
-
-    public StartGameAction(CardService cardService, GameDao gameDao) {
+    public StartGameAction(CardService cardService, GameService gameService) {
         this.cardService = cardService;
-        this.gameDao = gameDao;
+        this.gameService = gameService;
     }
 
     @Override
@@ -32,8 +31,10 @@ public class StartGameAction implements GameAction {
             //Load in side cards for the first time
             cardService.revealTwoNewSideCards(actionRequest.getGameId());
 
+            gameService.setDefaultAnteForGameByPlayerCount(actionRequest.getGameId());
+
             //Update game status to in session from open
-            gameDao.updateGameStatus(actionRequest.getGameId(), GameStatus.IN_SESSION);
+            gameService.updateGameStatus(actionRequest.getGameId(), GameStatus.IN_SESSION);
         }
         return ResponseEntity.ok().build();
     }

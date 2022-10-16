@@ -33,10 +33,16 @@ public class BetGameAction implements GameAction {
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
         if (actionRequest instanceof BetActionRequest) {
 
+            //Validate that betAmount does not exceed half of user total - (paying the dummy whammy)
+            //Validate bet came from the user
+
             BetActionRequest betActionRequest = (BetActionRequest) actionRequest;
 
             BetResult betResult = cardService.performNewBet(betActionRequest);
             logger.info(betResult.toString());
+
+
+            gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
 
 
             //TODO return the middleCard to be displayed along with results of the bet

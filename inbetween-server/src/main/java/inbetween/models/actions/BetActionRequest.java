@@ -2,16 +2,15 @@ package inbetween.models.actions;
 
 public class BetActionRequest extends ActionRequest {
 
-
-    private String userBetting;
+    private String userBettingId;
     private int wagerAmount;
 
-    public String getUserBetting() {
-        return userBetting;
+    public String getUserBettingId() {
+        return userBettingId;
     }
 
-    public void setUserBetting(String userBetting) {
-        this.userBetting = userBetting;
+    public void setUserBettingId(String userBettingId) {
+        this.userBettingId = userBettingId;
     }
 
     public int getWagerAmount() {
