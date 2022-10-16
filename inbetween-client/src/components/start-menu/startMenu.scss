@@ -1,12 +1,19 @@
 #start-menu {
-  text-align: center;
-
   table {
-    padding: 15px;
-    margin: auto;
+    margin-top: 25px;
 
-    td {
-      min-width: 100px;
+    tr {
+      line-height: 10px;
+      vertical-align: middle;
+      td {
+        &.center {
+          text-align: center;
+        }
+      }
     }
+  }
+
+  #create-new-game-form-col {
+    padding-left: 5vw;
   }
 }

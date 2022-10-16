@@ -91,6 +91,10 @@ if (isProd) {
       "/api": {
         target: "http://localhost:8080",
         secure: false
+      },
+      "/perform": {
+        target: "http://localhost:8080",
+        secure: false
       }
     }
   };

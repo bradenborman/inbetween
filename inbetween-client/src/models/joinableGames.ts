@@ -1,4 +1,4 @@
-export default interface JoinAbleGames {
+export default interface JoinableGames {
   gameId: Number;
   lobbyName: string;
   gameStatus: string;
