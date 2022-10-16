@@ -33,7 +33,12 @@ public class CreateLobbyGameAction implements GameAction {
             CreateLobbyActionRequest createLobbyActionRequest = (CreateLobbyActionRequest) actionRequest;
 
 
-            LobbyCreatedResponse createdResponse = gameService.createNewLobbyAndInsertPlayer(createLobbyActionRequest.getDisplayName(), createLobbyActionRequest.getUserRole());
+            LobbyCreatedResponse createdResponse = gameService.createNewLobbyAndInsertPlayer(
+                    createLobbyActionRequest.getDisplayName(),
+                    createLobbyActionRequest.getUserRole(),
+                    createLobbyActionRequest.getLobbyName()
+            );
+
             logger.info("Player {} created lobby: {}", createLobbyActionRequest.getDisplayName(), createdResponse.getGameId());
 
             return ResponseEntity.status(HttpStatus.CREATED)

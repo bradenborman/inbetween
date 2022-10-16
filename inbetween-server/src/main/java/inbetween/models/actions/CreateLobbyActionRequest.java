@@ -6,6 +6,7 @@ public class CreateLobbyActionRequest extends ActionRequest {
 
     private String displayName;
     private UserRole userRole;
+    private String lobbyName;
 
     public String getDisplayName() {
         return displayName;
@@ -23,4 +24,11 @@ public class CreateLobbyActionRequest extends ActionRequest {
         this.userRole = userRole;
     }
 
+    public String getLobbyName() {
+        return lobbyName;
+    }
+
+    public void setLobbyName(String lobbyName) {
+        this.lobbyName = lobbyName;
+    }
 }

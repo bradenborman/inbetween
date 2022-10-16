@@ -3,6 +3,7 @@ import {
   BrowserRouter as ReactRouter,
   Route as ReactRoute
 } from "react-router-dom";
+import { StartMenu } from "../start-menu/startMenu";
 
 require("./app.scss");
 
@@ -12,7 +13,7 @@ export const App: React.FC<AppProps> = (props: AppProps) => {
   return (
     <ReactRouter>
       <ReactRoute path="/">
-        <h1>TEST</h1>
+        <StartMenu />
       </ReactRoute>
     </ReactRouter>
   );

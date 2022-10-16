@@ -1,4 +1,4 @@
-package borman.inbetween;
+package inbetween.utilities;
 
 import inbetween.InBetweenApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;

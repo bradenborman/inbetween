@@ -36,6 +36,13 @@ dependencies {
 
 
 task copyClient(dependsOn: ":inbetween-client:clientBuild") {
+
+	doFirst {
+		delete "src/main/resources/static"
+		delete "src/main/resources/templates"
+	}
+
+
 	doLast {
 		copy {
 			from new File(project(":inbetween-client").getProjectDir(), "build")
@@ -66,7 +73,7 @@ task finalizeBuild(type: Copy, dependsOn: build) {
 	rename "server-${version}.jar", "inbetween.jar"
 }
 
-bootJar.dependsOn(copyClient)
+processResources.dependsOn(copyClient)
 clean.dependsOn(":inbetween-client:clientClean")
 build.finalizedBy(finalizeBuild)
 

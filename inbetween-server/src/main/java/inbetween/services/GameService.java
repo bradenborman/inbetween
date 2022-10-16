@@ -3,6 +3,7 @@ package inbetween.services;
 import inbetween.daos.CardDao;
 import inbetween.daos.GameDao;
 import inbetween.daos.UserDao;
+import inbetween.models.JoinableGame;
 import inbetween.models.LobbyCreatedResponse;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
@@ -32,10 +33,10 @@ public class GameService {
     }
 
     @Transactional
-    public LobbyCreatedResponse createNewLobbyAndInsertPlayer(String displayName, UserRole userRole) {
+    public LobbyCreatedResponse createNewLobbyAndInsertPlayer(String displayName, UserRole userRole, String lobbyName) {
         LobbyCreatedResponse lobbyCreatedResponse = new LobbyCreatedResponse();
 
-        int gameId = cardDao.initNewGame();
+        int gameId = cardDao.initNewGame(lobbyName);
         cardDao.insertDeck(gameId, DeckUtility.initializeNewDeck());
         cardDao.initGameTable(gameId);
         int playerId = joinLobbyWithPlayer(gameId, displayName, userRole, true);
@@ -43,7 +44,11 @@ public class GameService {
         lobbyCreatedResponse.setGameId(gameId);
         lobbyCreatedResponse.setUserPlayingOnScreenId(playerId);
 
-        simpMessagingTemplate.convertAndSend("/topic/lobbies", displayName);
+        JoinableGame joinableGame = new JoinableGame();
+        joinableGame.setLobbyName(lobbyName);
+        joinableGame.setGameId(String.valueOf(gameId));
+
+        simpMessagingTemplate.convertAndSend("/topic/new-lobby", joinableGame);
 
         return lobbyCreatedResponse;
     }

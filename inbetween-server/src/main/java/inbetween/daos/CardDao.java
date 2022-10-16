@@ -26,13 +26,14 @@ public class CardDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public int initNewGame() {
+    public int initNewGame(String lobbyName) {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("game_status", GameStatus.OPEN.name());
+        parameters.put("game_name", lobbyName);
         return new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("GAME")
                 .usingGeneratedKeyColumns("game_id")
-                .usingColumns("game_status")
+                .usingColumns("game_status", "game_name")
                 .executeAndReturnKey(parameters)
                 .intValue();
     }
