@@ -75,10 +75,9 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
       })
       .then(response => {
         if (response.status == 201) {
-          //CREATED
           history.push({
             pathname: "/game",
-            search: "?lobby=" + response.data.gameId,
+            search: "?lobby=" + response.data.uuid,
             state: {
               validRedirect: true,
               userIdJoined: response.data.userPlayingOnScreenId

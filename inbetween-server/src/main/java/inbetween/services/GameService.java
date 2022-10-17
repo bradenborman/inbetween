@@ -38,18 +38,15 @@ public class GameService {
     public LobbyCreatedResponse createNewLobbyAndInsertPlayer(String displayName, UserRole userRole, String lobbyName) {
         LobbyCreatedResponse lobbyCreatedResponse = new LobbyCreatedResponse();
 
-        int gameId = cardDao.initNewGame(lobbyName);
+        int gameId = gameDao.initNewGame(lobbyName);
         cardDao.insertDeck(gameId, DeckUtility.initializeNewDeck());
         cardDao.initGameTable(gameId);
         int playerId = joinLobbyWithPlayer(gameId, displayName, userRole, true);
+        JoinableGame joinableGame = gameDao.findJoinableGameByGameId(gameId);
 
         lobbyCreatedResponse.setGameId(gameId);
         lobbyCreatedResponse.setUserPlayingOnScreenId(playerId);
-
-        JoinableGame joinableGame = new JoinableGame();
-        joinableGame.setLobbyName(lobbyName);
-        joinableGame.setGameId(String.valueOf(gameId));
-        joinableGame.setGameStatus(GameStatus.OPEN);
+        lobbyCreatedResponse.setUuid(joinableGame.getUuid());
 
         simpMessagingTemplate.convertAndSend("/topic/new-lobby", joinableGame);
 

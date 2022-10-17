@@ -3,6 +3,7 @@ package inbetween.models;
 public class LobbyCreatedResponse {
 
     private int gameId;
+    private String uuid;
     private int userPlayingOnScreenId;
 
     public int getGameId() {
@@ -11,6 +12,14 @@ public class LobbyCreatedResponse {
 
     public void setGameId(int gameId) {
         this.gameId = gameId;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public int getUserPlayingOnScreenId() {

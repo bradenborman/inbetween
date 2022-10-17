@@ -9,10 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class GameDao {
@@ -23,6 +20,19 @@ public class GameDao {
     public GameDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public int initNewGame(String lobbyName) {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("game_status", GameStatus.OPEN.name());
+        parameters.put("game_name", lobbyName);
+        parameters.put("game_uuid", UUID.randomUUID().toString());
+        return new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("GAME")
+                .usingGeneratedKeyColumns("game_id")
+                .usingColumns("game_status", "game_name", "game_uuid")
+                .executeAndReturnKey(parameters)
+                .intValue();
     }
 
     public void updateGameStatus(int gameId, GameStatus gameStatus) {
@@ -71,6 +81,21 @@ public class GameDao {
         namedParameterJdbcTemplate.update("UPDATE GAME_TABLE SET pot_value = (pot_value + :amountShifted) WHERE GAME_ID = :gameId", parameters);
     }
 
+    public JoinableGame findJoinableGameByGameId(int gameId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT * FROM GAME WHERE game_id = :gameId", parameters,
+                (rs, num) -> {
+                    JoinableGame game = new JoinableGame();
+                    game.setGameId(rs.getString("game_id"));
+                    game.setLobbyName(rs.getString("game_name"));
+                    game.setUuid(rs.getString("game_uuid"));
+                    game.setGameStatus(GameStatus.valueOf(rs.getString("game_status")));
+                    return game;
+                }
+        );
+    }
+
     public List<JoinableGame> findAllJoinableGames() {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("status", GameStatus.OPEN.name());
@@ -79,7 +104,7 @@ public class GameDao {
                     JoinableGame game = new JoinableGame();
                     game.setGameId(rs.getString("game_id"));
                     game.setLobbyName(rs.getString("game_name"));
-                    game.setLobbyName(rs.getString("game_name"));
+                    game.setUuid(rs.getString("game_uuid"));
                     game.setGameStatus(GameStatus.valueOf(rs.getString("game_status")));
                     return game;
                 }

@@ -1,19 +1,15 @@
 package inbetween.daos;
 
-import inbetween.models.*;
+import inbetween.models.Deck;
+import inbetween.models.PlayingCard;
 import inbetween.models.enums.CardSuite;
 import inbetween.models.enums.CardValue;
-import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.PlayingCardColumnName;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Repository
 public class CardDao {
@@ -24,18 +20,6 @@ public class CardDao {
     public CardDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate, JdbcTemplate jdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.jdbcTemplate = jdbcTemplate;
-    }
-
-    public int initNewGame(String lobbyName) {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("game_status", GameStatus.OPEN.name());
-        parameters.put("game_name", lobbyName);
-        return new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("GAME")
-                .usingGeneratedKeyColumns("game_id")
-                .usingColumns("game_status", "game_name")
-                .executeAndReturnKey(parameters)
-                .intValue();
     }
 
     public void insertDeck(int gameId, Deck deck) {

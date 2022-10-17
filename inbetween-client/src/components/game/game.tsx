@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useHistory } from "react-router-dom";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 
@@ -7,36 +7,27 @@ export interface GameProps {}
 
 export const Game: React.FC<GameProps> = (props: GameProps) => {
   const location = useLocation();
+  const history = useHistory();
 
-  const [joinedGameFromHomePage, setJoinedGameFromHomePage] = useState<
-    boolean
-  >();
-
-  useEffect(() => {
-    const state: any = location.state;
-    setJoinedGameFromHomePage(state?.validRedirect);
-  }, [location]);
+  const [userId, setUserId] = useState<string>();
 
   useEffect(() => {
     const state: any = location.state;
-    const userIDJoined = state?.userIdJoined;
 
-    const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
-    const stomp: StompJS.Client = StompJS.over(webSocket);
-    stomp.connect({}, () => {
-      stomp.subscribe("/topic/user-joined-game", (message: any) => {
-        const player: any = JSON.parse(message.body);
-        console.log(player);
+    //Check to see if load came from home page with state passed
+    if (!state?.validRedirect) {
+      history.push({
+        pathname: "/",
+        search: "?message=cannot-join-game-at-this-point"
       });
-      stomp.send("/app/joined", {}, userIDJoined);
-    });
+    }
 
-    return () => webSocket.close();
-  }, []);
+    setUserId(state.userIdJoined);
+  }, [location]);
 
   return (
     <main>
-      <h2>test</h2>
+      <h2>UserId: {userId}</h2>
     </main>
   );
 };

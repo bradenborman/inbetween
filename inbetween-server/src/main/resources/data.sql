@@ -1,5 +1,6 @@
 create table IF NOT EXISTS GAME (
   game_id bigint auto_increment,
+  game_uuid varchar(64) NOT NULL,
   game_name varchar(32) NOT NULL,
   game_status varchar(16),
   game_initialized TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

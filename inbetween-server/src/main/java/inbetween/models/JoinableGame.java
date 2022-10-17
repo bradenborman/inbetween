@@ -6,6 +6,7 @@ public class JoinableGame {
 
     private String gameId;
     private String lobbyName;
+    private String uuid;
     private GameStatus gameStatus;
 
     public String getGameId() {
@@ -22,6 +23,14 @@ public class JoinableGame {
 
     public void setLobbyName(String lobbyName) {
         this.lobbyName = lobbyName;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public GameStatus getGameStatus() {
