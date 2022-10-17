@@ -43,6 +43,9 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
           });
         }
       });
+      stomp.subscribe("/topic/joinable-game-update", (message: any) => {
+        setJoinAbleGameResponse(prevState => JSON.parse(message.body));
+      });
     });
 
     return () => webSocket.close();

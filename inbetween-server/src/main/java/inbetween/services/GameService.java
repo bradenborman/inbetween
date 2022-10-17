@@ -65,7 +65,11 @@ public class GameService {
         gameStatusResponseUpdateMessage.setUuid(gameDao.getUUIDByGameId(gameId));
         gameStatusResponseUpdateMessage.setGameStatus(gameStatus);
 
+        List<JoinableGame> allJoinableGamesUpdate = findAllJoinableGames();
+
         simpMessagingTemplate.convertAndSend("/topic/update-game-status", gameStatusResponseUpdateMessage);
+        simpMessagingTemplate.convertAndSend("/topic/joinable-game-update", allJoinableGamesUpdate);
+
     }
 
     public void setDefaultAnteForGameByPlayerCount(int gameId) {

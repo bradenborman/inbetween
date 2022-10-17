@@ -87,7 +87,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     return playerList?.map((x, index) => (
       <tr key={index}>
         <td className={classNames({ "my-user": x.userId == userId })}>
-          {x.displayName}
+          ({x.score}) - {x.displayName}
         </td>
         <td className={"turn-status"}>{x.playersTurn ? "Users Turn" : ""}</td>
       </tr>
