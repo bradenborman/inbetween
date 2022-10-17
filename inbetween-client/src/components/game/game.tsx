@@ -33,16 +33,16 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         pathname: "/",
         search: "?message=cannot-join-game-at-this-point"
       });
+    } else {
+      axios
+        .get(`/api/player-list-by-uuid?uuid=${state.gameUUID}`)
+        .then(response => {
+          setPlayerList(prev => response.data);
+        });
+
+      setUserId(state.userIdJoined);
+      setGameUUID(state.gameUUID);
     }
-
-    axios
-      .get(`/api/player-list-by-uuid?uuid=${state.gameUUID}`)
-      .then(response => {
-        setPlayerList(prev => response.data);
-      });
-
-    setUserId(state.userIdJoined);
-    setGameUUID(state.gameUUID);
   }, [location]);
 
   useEffect(() => {
