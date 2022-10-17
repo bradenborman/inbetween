@@ -129,4 +129,10 @@ public class GameDao {
         String status = namedParameterJdbcTemplate.queryForObject("SELECT game_status FROM GAME WHERE game_uuid = :uuid", parameters, String.class);
         return GameStatus.valueOf(status);
     }
+
+    public Integer countPotTotalInPlay(int gameId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT pot_value FROM GAME_TABLE WHERE game_id = :gameId", parameters, Integer.class);
+    }
 }

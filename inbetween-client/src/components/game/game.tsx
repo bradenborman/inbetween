@@ -8,6 +8,8 @@ import Player from "../../models/player";
 import axios from "axios";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import GameStatusResponse from "../../models/gameStatusResponse";
+import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
+import PlayingCard from "../../models/playingCard";
 
 export interface GameProps {}
 
@@ -22,6 +24,11 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   >();
 
   const [playerList, setPlayerList] = useState<Player[]>();
+  const [potTotal, setPotTotal] = useState<number>(0);
+  const [leftPlayingCard, setLeftPlayingCard] = useState<PlayingCard>();
+  const [rightPlayingCard, setRightPlayingCard] = useState<PlayingCard>();
+  const [maxBidAllowed, setMaxBidAllowed] = useState<number>(0);
+  const [cardsUntilReshuffle, setCardsUntilReshuffle] = useState<number>(52);
 
   useEffect(() => {
     const state: any = location.state;
@@ -76,6 +83,21 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
           let gameStatusResponse: GameStatusResponse = JSON.parse(message.body);
           if (gameStatusResponse.uuid == gameUUID) {
             setGameStatusResponse(prev => gameStatusResponse);
+          }
+        });
+        stomp.subscribe("/topic/start-turn", (message: any) => {
+          let gameUpdateSTartTurnMessage: GameUpdateStartTurn = JSON.parse(
+            message.body
+          );
+          if (gameUpdateSTartTurnMessage.uuid == gameUUID) {
+            setPotTotal(gameUpdateSTartTurnMessage.potTotal);
+            setLeftPlayingCard(gameUpdateSTartTurnMessage.leftPlayingCard);
+            setRightPlayingCard(gameUpdateSTartTurnMessage.rightPlayingCard);
+            setMaxBidAllowed(gameUpdateSTartTurnMessage.maxBidAllowed);
+            setPlayerList(gameUpdateSTartTurnMessage.playerList);
+            setCardsUntilReshuffle(
+              gameUpdateSTartTurnMessage.cardsLeftUntilReshuffle
+            );
           }
         });
       });

@@ -96,4 +96,11 @@ public class CardDao {
         gameIdParams.addValue("gameId", gameId);
         namedParameterJdbcTemplate.update(sql, gameIdParams);
     }
+
+    public Integer countUnitlNextShuffle(int gameId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT count(*) FROM QUEUED_CARDS " +
+                "WHERE game_id = :gameId AND has_been_drawn = false", params, Integer.class);
+    }
 }

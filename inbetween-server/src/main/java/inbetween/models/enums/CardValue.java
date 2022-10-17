@@ -1,5 +1,7 @@
 package inbetween.models.enums;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CardValue {
 
     ACE(14),
@@ -16,6 +18,7 @@ public enum CardValue {
     THREE(3),
     TWO(2);
 
+    @JsonValue
     private int value;
 
     CardValue(int value) {
