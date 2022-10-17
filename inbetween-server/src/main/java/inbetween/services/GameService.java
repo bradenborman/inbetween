@@ -4,6 +4,7 @@ import inbetween.daos.CardDao;
 import inbetween.daos.GameDao;
 import inbetween.daos.UserDao;
 import inbetween.models.JoinableGame;
+import inbetween.models.JoinedGameResponse;
 import inbetween.models.LobbyCreatedResponse;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
@@ -79,5 +80,13 @@ public class GameService {
 
     public List<JoinableGame> findAllJoinableGames() {
         return gameDao.findAllJoinableGames();
+    }
+
+    public JoinableGame findJoinableGameByGameId(int gameId) {
+        return gameDao.findJoinableGameByGameId(gameId);
+    }
+
+    public void sendNewUserJoinedGameMessage(JoinedGameResponse joinedGameResponse) {
+        simpMessagingTemplate.convertAndSend("/topic/user-joined-game", joinedGameResponse);
     }
 }

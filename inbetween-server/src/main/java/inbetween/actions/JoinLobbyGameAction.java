@@ -1,5 +1,6 @@
 package inbetween.actions;
 
+import inbetween.models.JoinedGameResponse;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.actions.JoinLobbyActionRequest;
 import inbetween.models.enums.UserGameAction;
@@ -25,9 +26,15 @@ public class JoinLobbyGameAction implements GameAction {
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
         if (actionRequest instanceof JoinLobbyActionRequest) {
             JoinLobbyActionRequest request = (JoinLobbyActionRequest) actionRequest;
-            gameService.joinLobbyWithPlayer(request.getGameId(), request.getDisplayName(), request.getPlayerRole(), false);
+            int playerId = gameService.joinLobbyWithPlayer(request.getGameId(), request.getDisplayName(), request.getPlayerRole(), false);
+            String uuid = gameService.findJoinableGameByGameId(request.getGameId()).getUuid();
+            JoinedGameResponse joinedGameResponse = new JoinedGameResponse(uuid, playerId, request.getDisplayName(), request.getPlayerRole());
+
+            gameService.sendNewUserJoinedGameMessage(joinedGameResponse);
+
+            return ResponseEntity.ok(joinedGameResponse);
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 }

@@ -4,7 +4,15 @@ import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import { useHistory } from "react-router-dom";
 import JoinableGames from "../../models/joinableGames";
-import { Container, Col, Row, Table, Button, Form } from "react-bootstrap";
+import {
+  Container,
+  Col,
+  Row,
+  Table,
+  Button,
+  Form,
+  FormControl
+} from "react-bootstrap";
 
 export interface StartMenuProps {}
 
@@ -13,6 +21,8 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
 
   const playerNameRef = useRef(null);
   const lobbyNameRef = useRef(null);
+
+  const [joinGameDisplayName, setJoinGameDisplayName] = useState<string>(""); //Cant use ref for ths one
 
   const [joinAbleGameResponse, setJoinAbleGameResponse] = useState<
     JoinableGames[]
@@ -50,26 +60,58 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
         <td>{x.lobbyName}</td>
         <td className="center">{x.gameStatus}</td>
         <td className="center">
-          <Button className="btn-link" onClick={e => joinLobby(x.gameId)}>
+          <Button
+            className="btn-link"
+            onClick={e => joinLobby(x.gameId, joinGameDisplayName)}
+            disabled={
+              joinGameDisplayName == "" || joinGameDisplayName.length < 3
+            }
+          >
             Join
           </Button>
         </td>
       </tr>
     ));
-  }, [joinAbleGameResponse]);
+  }, [joinAbleGameResponse, joinGameDisplayName]);
 
-  const joinLobby = (gameIdToJoin: Number) => {
-    alert(`Joining ${gameIdToJoin}`);
+  const joinLobby = (gameIdToJoin: Number, displayName: string) => {
+    if (displayName != "" && displayName.length > 2) {
+      axios
+        .post("/perform:JOIN_LOBBY", {
+          displayName,
+          gameId: gameIdToJoin,
+          playerRole: "PLAYER",
+          joinGame: true
+        })
+        .then(response => {
+          if (response.status == 200) {
+            history.push({
+              pathname: "/game",
+              search: "?lobby=" + response.data.uuid,
+              state: {
+                validRedirect: true,
+                userIdJoined: response.data.userPlayingOnScreenId,
+                gameUUID: response.data.uuid,
+                displayName: displayName
+              }
+            });
+          }
+        });
+    }
+  };
+
+  const handleJoinGameDisplayNameChange = (e: any) => {
+    setJoinGameDisplayName(prev => e.target.value);
   };
 
   const handleNewLobbySubmit = (e: any) => {
     e.preventDefault();
-    const displayName: string = playerNameRef.current.value;
+    const displayNameFromRef: string = playerNameRef.current.value;
     const lobbyName: string = lobbyNameRef.current.value;
     setSubmittingNewGame(true);
     axios
       .post("/perform:CREATE_LOBBY", {
-        displayName,
+        displayName: displayNameFromRef,
         lobbyName,
         userRole: "PLAYER"
       })
@@ -80,7 +122,9 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
             search: "?lobby=" + response.data.uuid,
             state: {
               validRedirect: true,
-              userIdJoined: response.data.userPlayingOnScreenId
+              userIdJoined: response.data.userPlayingOnScreenId,
+              gameUUID: response.data.uuid,
+              displayName: displayNameFromRef
             }
           });
         }
@@ -98,6 +142,14 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
         </Row>
         <Row>
           <Col md={6}>
+            <Form.Label htmlFor="joinGameDisplayName">
+              Join game display name
+            </Form.Label>
+            <FormControl
+              id="joinGameDisplayName"
+              onChange={handleJoinGameDisplayNameChange}
+              value={joinGameDisplayName}
+            />
             <Table bordered className="join-lobby-table">
               <thead>
                 <tr>
