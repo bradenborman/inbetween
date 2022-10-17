@@ -79,7 +79,10 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
           history.push({
             pathname: "/game",
             search: "?lobby=" + response.data.gameId,
-            state: { validRedirect: true }
+            state: {
+              validRedirect: true,
+              userIdJoined: response.data.userPlayingOnScreenId
+            }
           });
         }
         setSubmittingNewGame(false);

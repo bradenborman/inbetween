@@ -31,6 +31,7 @@ create table IF NOT EXISTS PLAYERS (
   game_joined bigint NOT NULL,
   playing_role varchar(16) NOT NULL,
   is_players_turn TINYINT NOT NULL DEFAULT 0,
+  is_player_in_lobby_online TINYINT NOT NULL DEFAULT 0,
   score INT NOT NULL DEFAULT 100,
   FOREIGN KEY (game_joined) REFERENCES GAME(game_id)
 );

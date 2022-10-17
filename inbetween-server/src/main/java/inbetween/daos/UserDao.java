@@ -55,4 +55,26 @@ public class UserDao {
         parameters2.addValue("playerId", player.getUserId());
         namedParameterJdbcTemplate.update("UPDATE PLAYERS SET is_players_turn = true WHERE game_joined = :gameId AND player_Id = :playerId", parameters2);
     }
+
+    public void updateStatusOnline(String userIdJoined) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("playerId", userIdJoined);
+        namedParameterJdbcTemplate.update("UPDATE PLAYERS SET is_player_in_lobby_online = true WHERE player_Id = :playerId", parameters);
+    }
+
+    public Player fillUserDetails(String playerId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("playerId", playerId);
+        return namedParameterJdbcTemplate.queryForObject(
+                "SELECT * FROM PLAYERS WHERE player_Id = :playerId",
+                parameters,
+                (rs, rnum) -> {
+                    Player player = new Player();
+                    player.setPlayersTurn(rs.getBoolean("is_players_turn"));
+                    player.setUserId(rs.getInt("player_Id"));
+                    player.setDisplayName(rs.getString("display_name"));
+                    return player;
+                }
+        );
+    }
 }
