@@ -12,8 +12,9 @@ export interface AppProps {}
 export const App: React.FC<AppProps> = (props: AppProps) => {
   return (
     <ReactRouter>
-      <ReactRoute path="/">
-        <StartMenu />
+      <ReactRoute path="/" exact component={StartMenu} />
+      <ReactRoute path="/game" exact>
+        <>TEST</>
       </ReactRoute>
     </ReactRouter>
   );

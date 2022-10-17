@@ -23,7 +23,7 @@ public class ActionController {
     }
 
     @PostMapping("/perform:{action}")
-    public ResponseEntity<?> performAction(@PathVariable UserGameAction action, @RequestBody ActionRequest actionRequest) {
+    public synchronized ResponseEntity<?> performAction(@PathVariable UserGameAction action, @RequestBody ActionRequest actionRequest) {
         Optional<GameAction> actionToPerform = gameActions.stream()
                 .filter(x -> x.hasWork(action))
                 .findFirst();

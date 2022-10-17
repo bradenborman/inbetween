@@ -2,49 +2,40 @@ import React, { useEffect, useState, useMemo, useRef } from "react";
 import axios from "axios";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
+import { useHistory } from "react-router-dom";
 import JoinableGames from "../../models/joinableGames";
 import { Container, Col, Row, Table, Button, Form } from "react-bootstrap";
 
 export interface StartMenuProps {}
 
 export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
+  let history = useHistory();
+
   const playerNameRef = useRef(null);
   const lobbyNameRef = useRef(null);
-
-  let testData: JoinableGames[] = [
-    {
-      gameId: 1,
-      gameStatus: "OPEN",
-      lobbyName: "Bronts Crew"
-    },
-    {
-      gameId: 2,
-      gameStatus: "OPEN",
-      lobbyName: "Corshe's Boardwalk"
-    }
-  ];
 
   const [joinAbleGameResponse, setJoinAbleGameResponse] = useState<
     JoinableGames[]
   >();
+  const [submittingNewGame, setSubmittingNewGame] = useState<boolean>(false);
 
   useEffect(() => {
-    const socket: any = new SockJS("/gs-guide-websocket"),
-      stomp = StompJS.over(socket);
-
+    const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
+    const stomp: StompJS.Client = StompJS.over(webSocket);
     stomp.connect({}, () => {
       stomp.subscribe("/topic/new-lobby", (message: any) => {
-        message.body;
-        setJoinAbleGameResponse(prevState => {
-          let arr = [...prevState];
-          let newLobby: JoinableGames = JSON.parse(message.body);
-          arr.unshift(newLobby);
-          return arr;
-        });
+        if (!submittingNewGame) {
+          setJoinAbleGameResponse(prevState => {
+            let arr = [...prevState];
+            let newLobby: JoinableGames = JSON.parse(message.body);
+            arr.unshift(newLobby);
+            return arr;
+          });
+        }
       });
     });
 
-    return () => socket.close();
+    return () => webSocket.close();
   }, []);
 
   useEffect(() => {
@@ -72,8 +63,10 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
   };
 
   const handleNewLobbySubmit = (e: any) => {
+    e.preventDefault();
     const displayName: string = playerNameRef.current.value;
     const lobbyName: string = lobbyNameRef.current.value;
+    setSubmittingNewGame(true);
     axios
       .post("/perform:CREATE_LOBBY", {
         displayName,
@@ -81,7 +74,15 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
         userRole: "PLAYER"
       })
       .then(response => {
-        alert(response.status.toString());
+        if (response.status == 201) {
+          //CREATED
+          history.push({
+            pathname: "/game",
+            search: "?lobby=" + response.data.gameId,
+            state: { validRedirect: true }
+          });
+        }
+        setSubmittingNewGame(false);
       });
   };
 

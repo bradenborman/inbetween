@@ -32,6 +32,7 @@ public class CreateLobbyGameAction implements GameAction {
         if (actionRequest instanceof CreateLobbyActionRequest) {
             CreateLobbyActionRequest createLobbyActionRequest = (CreateLobbyActionRequest) actionRequest;
 
+            //TODO validate params (empty strings, profanity etc)
 
             LobbyCreatedResponse createdResponse = gameService.createNewLobbyAndInsertPlayer(
                     createLobbyActionRequest.getDisplayName(),

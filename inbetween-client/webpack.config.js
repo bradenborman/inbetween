@@ -95,6 +95,10 @@ if (isProd) {
       "/perform": {
         target: "http://localhost:8080",
         secure: false
+      },
+      "/gs-guide-websocket": {
+        target: "http://localhost:8080",
+        secure: false
       }
     }
   };
