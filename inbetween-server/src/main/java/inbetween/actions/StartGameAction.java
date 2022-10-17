@@ -28,13 +28,16 @@ public class StartGameAction implements GameAction {
     @Override
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
         if (actionRequest instanceof StartGameActionRequest) {
-            //Load in side cards for the first time
-            cardService.revealTwoNewSideCards(actionRequest.getGameId());
+            StartGameActionRequest request = (StartGameActionRequest) actionRequest;
+            int gameId = gameService.findGameIdByUUID(request.getUuidToStart());
 
-            gameService.setDefaultAnteForGameByPlayerCount(actionRequest.getGameId());
+            //Load in side cards for the first time
+            cardService.revealTwoNewSideCards(gameId);
+
+            gameService.setDefaultAnteForGameByPlayerCount(gameId);
 
             //Update game status to in session from open
-            gameService.updateGameStatusAndSendMessage(actionRequest.getGameId(), GameStatus.IN_SESSION);
+            gameService.updateGameStatusAndSendMessage(gameId, GameStatus.IN_SESSION);
         }
         return ResponseEntity.ok().build();
     }

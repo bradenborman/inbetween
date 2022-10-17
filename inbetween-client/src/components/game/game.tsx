@@ -6,7 +6,7 @@ import SockJS from "sockjs-client";
 import JoinedGameResponse from "../../models/joinedGameResponse";
 import Player from "../../models/player";
 import axios from "axios";
-import { Container, Row, Col, Card } from "react-bootstrap";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import GameStatusResponse from "../../models/gameStatusResponse";
 
 export interface GameProps {}
@@ -59,7 +59,9 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   }, []);
 
   useEffect(() => {
-    const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
+    const webSocket: WebSocket = new SockJS("/gs-guide-websocket", {
+      debug: false
+    });
 
     if (gameUUID != undefined && userId != undefined) {
       const stomp: StompJS.Client = StompJS.over(webSocket);
@@ -82,6 +84,25 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     return () => webSocket.close();
   }, [gameUUID, userId]);
 
+  const handleStartGame = (e: any) => {
+    e.preventDefault();
+    const confirmStart: boolean = confirm(
+      "Are you sure you want to start the game? Has everyone joined?"
+    );
+    if (confirmStart) {
+      axios
+        .post("/perform:START_GAME", {
+          uuidToStart: gameUUID,
+          startGame: true
+        })
+        .then(response => {
+          if (response.status == 200) {
+            console.log("Started Game submitted 200");
+          }
+        });
+    }
+  };
+
   const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
     console.log(playerList);
     return playerList?.map((x, index) => (
@@ -93,6 +114,19 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       </tr>
     ));
   }, [playerList]);
+
+  const controlButtons: JSX.Element = useMemo(() => {
+    if (gameStatusResponse != undefined) {
+      if (gameStatusResponse.gameStatus == "OPEN") {
+        return (
+          <div>
+            <Button onClick={handleStartGame}>Start Game</Button>
+          </div>
+        );
+      }
+    }
+    return <></>;
+  }, [gameStatusResponse, playerList]);
 
   return (
     <main id="gamelobby">
@@ -114,6 +148,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                     </tr>
                   </tbody>
                 </table>
+                <div id="control-buttons">{controlButtons}</div>
               </div>
             </Card>
           </Col>
