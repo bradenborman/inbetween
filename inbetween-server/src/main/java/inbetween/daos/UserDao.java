@@ -40,6 +40,7 @@ public class UserDao {
                     player.setUserId(rs.getInt("player_Id"));
                     player.setDisplayName(rs.getString("display_name"));
                     player.setUserRole(UserRole.valueOf(rs.getString("playing_role")));
+                    player.setScore(rs.getInt("score"));
                     return player;
                 }
         );
@@ -73,6 +74,8 @@ public class UserDao {
                     player.setPlayersTurn(rs.getBoolean("is_players_turn"));
                     player.setUserId(rs.getInt("player_Id"));
                     player.setDisplayName(rs.getString("display_name"));
+                    player.setUserRole(UserRole.valueOf(rs.getString("playing_role")));
+                    player.setScore(rs.getInt("score"));
                     return player;
                 }
         );

@@ -8,6 +8,7 @@ public class Player {
     private String displayName;
     private boolean isPlayersTurn;
     private UserRole userRole;
+    private int score;
 
     public int getUserId() {
         return userId;
@@ -39,5 +40,13 @@ public class Player {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
     }
 }

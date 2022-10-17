@@ -3,4 +3,5 @@ export default interface Player {
   displayName: string;
   playersTurn: string;
   userRole: string;
+  score: number;
 }

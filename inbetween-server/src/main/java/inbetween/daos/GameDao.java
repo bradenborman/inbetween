@@ -111,9 +111,22 @@ public class GameDao {
         );
     }
 
-    public Integer getUUIDByGameID(String uuid) {
+    public Integer getGameIdByUUID(String uuid) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("uuid", uuid);
         return namedParameterJdbcTemplate.queryForObject("SELECT game_id FROM GAME WHERE game_uuid = :uuid", parameters, Integer.class);
+    }
+
+    public String getUUIDByGameId(int gameId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT game_uuid FROM GAME WHERE game_id = :gameId", parameters, String.class);
+    }
+
+    public GameStatus getGameStatusByUUID(String uuid) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("uuid", uuid);
+        String status = namedParameterJdbcTemplate.queryForObject("SELECT game_status FROM GAME WHERE game_uuid = :uuid", parameters, String.class);
+        return GameStatus.valueOf(status);
     }
 }

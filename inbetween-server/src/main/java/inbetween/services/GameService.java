@@ -3,10 +3,7 @@ package inbetween.services;
 import inbetween.daos.CardDao;
 import inbetween.daos.GameDao;
 import inbetween.daos.UserDao;
-import inbetween.models.JoinableGame;
-import inbetween.models.JoinedGameResponse;
-import inbetween.models.LobbyCreatedResponse;
-import inbetween.models.Player;
+import inbetween.models.*;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.UserRole;
@@ -64,7 +61,11 @@ public class GameService {
         logger.info("Updating game status to: {} in lobby {}", gameStatus.name(), gameId);
         gameDao.updateGameStatus(gameId, gameStatus);
 
-        //TODO
+        GameStatusResponse gameStatusResponseUpdateMessage = new GameStatusResponse();
+        gameStatusResponseUpdateMessage.setUuid(gameDao.getUUIDByGameId(gameId));
+        gameStatusResponseUpdateMessage.setGameStatus(gameStatus);
+
+        simpMessagingTemplate.convertAndSend("/topic/update-game-status", gameStatusResponseUpdateMessage);
     }
 
     public void setDefaultAnteForGameByPlayerCount(int gameId) {
@@ -92,7 +93,15 @@ public class GameService {
     }
 
     public List<Player> playerListByUUID(String uuid) {
-        int gameId = gameDao.getUUIDByGameID(uuid);
+        int gameId = gameDao.getGameIdByUUID(uuid);
         return userDao.selectPlayersFromGame(gameId);
+    }
+
+    public GameStatusResponse gameStatusByUUID(String uuid) {
+        GameStatus gameStatus = gameDao.getGameStatusByUUID(uuid);
+        GameStatusResponse response = new GameStatusResponse();
+        response.setUuid(uuid);
+        response.setGameStatus(gameStatus);
+        return response;
     }
 }

@@ -7,6 +7,7 @@ import JoinedGameResponse from "../../models/joinedGameResponse";
 import Player from "../../models/player";
 import axios from "axios";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import GameStatusResponse from "../../models/gameStatusResponse";
 
 export interface GameProps {}
 
@@ -16,6 +17,9 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
 
   const [userId, setUserId] = useState<string>();
   const [gameUUID, setGameUUID] = useState<string>();
+  const [gameStatusResponse, setGameStatusResponse] = useState<
+    GameStatusResponse
+  >();
 
   const [playerList, setPlayerList] = useState<Player[]>();
 
@@ -40,6 +44,21 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   }, [location]);
 
   useEffect(() => {
+    const state: any = location.state;
+    if (!state?.validRedirect) {
+      history.push({
+        pathname: "/",
+        search: "?message=cannot-join-game-at-this-point"
+      });
+    } else {
+      axios.get(`/api/game-status?uuid=${state.gameUUID}`).then(response => {
+        const status: GameStatusResponse = response.data;
+        setGameStatusResponse(status);
+      });
+    }
+  }, []);
+
+  useEffect(() => {
     const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
 
     if (gameUUID != undefined && userId != undefined) {
@@ -51,11 +70,17 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             setPlayerList(prev => playerJoined.playersJoined);
           }
         });
+        stomp.subscribe("/topic/update-game-status", (message: any) => {
+          let gameStatusResponse: GameStatusResponse = JSON.parse(message.body);
+          if (gameStatusResponse.uuid == gameUUID) {
+            setGameStatusResponse(prev => gameStatusResponse);
+          }
+        });
       });
     }
 
     return () => webSocket.close();
-  }, [gameUUID, undefined]);
+  }, [gameUUID, userId]);
 
   const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
     console.log(playerList);
@@ -73,26 +98,18 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     <main id="gamelobby">
       <Container>
         <Row>
-          <Col sm={9}>
+          <Col lg={9}>
             <Card>
               <div id="game-table-wrapper">
                 <table id="game-board">
                   <tbody>
                     <tr id="cards">
                       <td>
-                        <object
-                          id="svg1"
-                          data="/img/cards/backs/red2.svg"
-                          type="image/svg+xml"
-                        ></object>
+                        <img src="/img/cards/backs/red2.png" />
                       </td>
                       <td></td>
                       <td>
-                        <object
-                          id="svg1"
-                          data="/img/cards/backs/red2.svg"
-                          type="image/svg+xml"
-                        ></object>
+                        <img src="/img/cards/backs/red2.png" />
                       </td>
                     </tr>
                   </tbody>
@@ -100,8 +117,10 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
               </div>
             </Card>
           </Col>
-          <Col sm={3}>
-            <Card id="game-status-card">Game Status: {"OPEN"}</Card>
+          <Col lg={3}>
+            <Card id="game-status-card">
+              Game Status: {gameStatusResponse?.gameStatus}
+            </Card>
             <Card>
               <table id="player-turn-order">
                 <tbody>{playersWaitingRows}</tbody>

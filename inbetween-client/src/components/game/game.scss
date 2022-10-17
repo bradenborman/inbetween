@@ -11,6 +11,10 @@
     table#game-board {
       width: 100%;
       tr#cards {
+        img {
+          width: 15vw;
+        }
+
         td:nth-child(1) {
           text-align: left;
         }

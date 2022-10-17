@@ -3,6 +3,7 @@ package inbetween.controllers;
 
 import inbetween.models.JoinableGame;
 import inbetween.models.Player;
+import inbetween.models.GameStatusResponse;
 import inbetween.services.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,6 +33,12 @@ public class ApiController {
     public ResponseEntity<List<Player>> playerListByUUID(@RequestParam String uuid) {
         List<Player> playerList = gameService.playerListByUUID(uuid);
         return ResponseEntity.ok(playerList);
+    }
+
+    @GetMapping("/game-status")
+    public ResponseEntity<GameStatusResponse> gameStatusByUUID(@RequestParam String uuid) {
+        GameStatusResponse gameStatus = gameService.gameStatusByUUID(uuid);
+        return ResponseEntity.ok(gameStatus);
     }
 
 }
