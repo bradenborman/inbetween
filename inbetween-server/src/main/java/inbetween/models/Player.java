@@ -1,10 +1,13 @@
 package inbetween.models;
 
+import inbetween.models.enums.UserRole;
+
 public class Player {
 
     private int userId;
     private String displayName;
     private boolean isPlayersTurn;
+    private UserRole userRole;
 
     public int getUserId() {
         return userId;
@@ -28,5 +31,13 @@ public class Player {
 
     public void setPlayersTurn(boolean playersTurn) {
         isPlayersTurn = playersTurn;
+    }
+
+    public UserRole getUserRole() {
+        return userRole;
+    }
+
+    public void setUserRole(UserRole userRole) {
+        this.userRole = userRole;
     }
 }

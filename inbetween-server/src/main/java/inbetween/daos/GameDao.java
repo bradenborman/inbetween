@@ -110,4 +110,10 @@ public class GameDao {
                 }
         );
     }
+
+    public Integer getUUIDByGameID(String uuid) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("uuid", uuid);
+        return namedParameterJdbcTemplate.queryForObject("SELECT game_id FROM GAME WHERE game_uuid = :uuid", parameters, Integer.class);
+    }
 }

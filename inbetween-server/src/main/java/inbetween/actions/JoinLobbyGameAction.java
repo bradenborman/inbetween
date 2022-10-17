@@ -1,6 +1,8 @@
 package inbetween.actions;
 
+import inbetween.daos.UserDao;
 import inbetween.models.JoinedGameResponse;
+import inbetween.models.Player;
 import inbetween.models.actions.ActionRequest;
 import inbetween.models.actions.JoinLobbyActionRequest;
 import inbetween.models.enums.UserGameAction;
@@ -8,13 +10,17 @@ import inbetween.services.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class JoinLobbyGameAction implements GameAction {
 
     private final GameService gameService;
+    private final UserDao userDao;
 
-    public JoinLobbyGameAction(GameService gameService) {
+    public JoinLobbyGameAction(GameService gameService, UserDao userDao) {
         this.gameService = gameService;
+        this.userDao = userDao;
     }
 
     @Override
@@ -28,7 +34,10 @@ public class JoinLobbyGameAction implements GameAction {
             JoinLobbyActionRequest request = (JoinLobbyActionRequest) actionRequest;
             int playerId = gameService.joinLobbyWithPlayer(request.getGameId(), request.getDisplayName(), request.getPlayerRole(), false);
             String uuid = gameService.findJoinableGameByGameId(request.getGameId()).getUuid();
-            JoinedGameResponse joinedGameResponse = new JoinedGameResponse(uuid, playerId, request.getDisplayName(), request.getPlayerRole());
+
+            List<Player> playerList = userDao.selectPlayersFromGame(request.getGameId());
+
+            JoinedGameResponse joinedGameResponse = new JoinedGameResponse(uuid, playerId, playerList);
 
             gameService.sendNewUserJoinedGameMessage(joinedGameResponse);
 

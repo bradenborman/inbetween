@@ -6,6 +6,7 @@ import inbetween.daos.UserDao;
 import inbetween.models.JoinableGame;
 import inbetween.models.JoinedGameResponse;
 import inbetween.models.LobbyCreatedResponse;
+import inbetween.models.Player;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.UserRole;
@@ -88,5 +89,10 @@ public class GameService {
 
     public void sendNewUserJoinedGameMessage(JoinedGameResponse joinedGameResponse) {
         simpMessagingTemplate.convertAndSend("/topic/user-joined-game", joinedGameResponse);
+    }
+
+    public List<Player> playerListByUUID(String uuid) {
+        int gameId = gameDao.getUUIDByGameID(uuid);
+        return userDao.selectPlayersFromGame(gameId);
     }
 }

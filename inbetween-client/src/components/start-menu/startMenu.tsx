@@ -90,9 +90,8 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
               search: "?lobby=" + response.data.uuid,
               state: {
                 validRedirect: true,
-                userIdJoined: response.data.userPlayingOnScreenId,
-                gameUUID: response.data.uuid,
-                displayName: displayName
+                userIdJoined: response.data.playerIdCreated,
+                gameUUID: response.data.uuid
               }
             });
           }
@@ -123,8 +122,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
             state: {
               validRedirect: true,
               userIdJoined: response.data.userPlayingOnScreenId,
-              gameUUID: response.data.uuid,
-              displayName: displayNameFromRef
+              gameUUID: response.data.uuid
             }
           });
         }

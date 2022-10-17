@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import JoinedGameResponse from "../../models/joinedGameResponse";
+import Player from "../../models/player";
+import axios from "axios";
 
 export interface GameProps {}
 
@@ -11,10 +13,17 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   const history = useHistory();
 
   const [userId, setUserId] = useState<string>();
-  const [userDisplayName, setUserDisplayName] = useState<string>();
   const [gameUUID, setGameUUID] = useState<string>();
 
-  //NEED TO GET THE LIST OF PLAYERS IN THE LOBBY AND THEN ADD TO IT AS THEY COME IN
+  const [playerList, setPlayerList] = useState<Player[]>();
+
+  const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
+    return playerList?.map((x, index) => (
+      <tr key={index}>
+        <td>{x.displayName}</td>
+      </tr>
+    ));
+  }, [playerList]);
 
   useEffect(() => {
     const state: any = location.state;
@@ -26,10 +35,13 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       });
     }
 
-    console.log(state);
+    axios
+      .get(`/api/player-list-by-uuid?uuid=${state.gameUUID}`)
+      .then(response => {
+        setPlayerList(prev => response.data);
+      });
 
     setUserId(state.userIdJoined);
-    setUserDisplayName(state.displayName);
     setGameUUID(state.gameUUID);
   }, [location]);
 
@@ -42,7 +54,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         stomp.subscribe("/topic/user-joined-game", (message: any) => {
           let playerJoined: JoinedGameResponse = JSON.parse(message.body);
           if (playerJoined.uuid == gameUUID) {
-            alert("New player joined: " + playerJoined.displayName);
+            setPlayerList(prev => playerJoined.playersJoined);
           }
         });
       });
@@ -53,7 +65,14 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
 
   return (
     <main>
-      <h2>UserId: {userDisplayName}</h2>
+      <table>
+        <tbody>
+          <tr>
+            <th>Name</th>
+          </tr>
+          {playersWaitingRows}
+        </tbody>
+      </table>
     </main>
   );
 };

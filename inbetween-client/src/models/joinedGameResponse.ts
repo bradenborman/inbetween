@@ -1,6 +1,7 @@
+import Player from "./player";
+
 export default interface JoinedGameResponse {
   uuid: string;
-  userPlayingOnScreenId: string;
-  displayName: string;
-  playerRole: string;
+  playerIdCreated: string;
+  playersJoined: Player[];
 }
