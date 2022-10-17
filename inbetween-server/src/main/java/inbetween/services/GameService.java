@@ -6,6 +6,7 @@ import inbetween.daos.UserDao;
 import inbetween.models.*;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
+import inbetween.models.enums.PlayingCardColumnName;
 import inbetween.models.enums.UserRole;
 import inbetween.utilities.DeckUtility;
 import org.slf4j.Logger;
@@ -109,7 +110,25 @@ public class GameService {
         return response;
     }
 
+    public GameUpdateStartTurn getLatestStartOfTurnUpdateByUUID(String uuid) {
+        int gameId = gameDao.getGameIdByUUID(uuid);
+        GameUpdateStartTurn updateStartTurn = new GameUpdateStartTurn();
+        updateStartTurn.setPlayerList(userDao.selectPlayersFromGame(gameId));
+        updateStartTurn.setUuid(uuid);
+        updateStartTurn.setLeftPlayingCard(cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.LEFT));
+        updateStartTurn.setRightPlayingCard(cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.RIGHT));
+        updateStartTurn.setCardsLeftUntilReshuffle(cardDao.countUnitlNextShuffle(gameId));
+        updateStartTurn.setPotTotal(gameDao.countPotTotalInPlay(gameId));
+        updateStartTurn.setMaxBidAllowed(50); //TODO set max
+        return updateStartTurn;
+    }
+
+
     public int findGameIdByUUID(String uuid) {
         return gameDao.getGameIdByUUID(uuid);
+    }
+
+    public String getUUIDByGameId(int gameId) {
+       return gameDao.getUUIDByGameId(gameId);
     }
 }

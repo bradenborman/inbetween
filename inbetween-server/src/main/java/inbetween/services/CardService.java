@@ -45,6 +45,7 @@ public class CardService {
         );
     }
 
+
     public void clearMiddleCard(int gameId) {
         cardDao.clearCard(gameId, PlayingCardColumnName.MIDDLE);
     }

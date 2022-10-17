@@ -62,13 +62,23 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         const status: GameStatusResponse = response.data;
         setGameStatusResponse(status);
       });
+
+      axios
+        .get(`/api/latest-turn-update?uuid=${state.gameUUID}`)
+        .then(response => {
+          const turnUpdate: GameUpdateStartTurn = response.data;
+          setPotTotal(turnUpdate.potTotal);
+          setLeftPlayingCard(turnUpdate.leftPlayingCard);
+          setRightPlayingCard(turnUpdate.rightPlayingCard);
+          setMaxBidAllowed(turnUpdate.maxBidAllowed);
+          setPlayerList(turnUpdate.playerList);
+          setCardsUntilReshuffle(turnUpdate.cardsLeftUntilReshuffle);
+        });
     }
   }, []);
 
   useEffect(() => {
-    const webSocket: WebSocket = new SockJS("/gs-guide-websocket", {
-      debug: false
-    });
+    const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
 
     if (gameUUID != undefined && userId != undefined) {
       const stomp: StompJS.Client = StompJS.over(webSocket);
@@ -125,8 +135,36 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     }
   };
 
+  const isUsersTurn: boolean = useMemo(() => {
+    if (playerList != undefined) {
+      const players = playerList?.filter(player => player.playersTurn);
+      console.log(players);
+      return players[0].userId == userId;
+    }
+    return false;
+  }, [playerList]);
+
+  const leftPlayingCardImg: JSX.Element = useMemo(() => {
+    if (leftPlayingCard != undefined) {
+      let src = `/img/cards/fronts/${leftPlayingCard.suit.toLowerCase()}_${
+        leftPlayingCard.cardValue
+      }.png`;
+      return <img src={src} />;
+    }
+    return <img src="/img/cards/backs/red2.png" />;
+  }, [leftPlayingCard]);
+
+  const rightPlayingCardImg: JSX.Element = useMemo(() => {
+    if (rightPlayingCard != undefined) {
+      let src = `/img/cards/fronts/${rightPlayingCard.suit.toLowerCase()}_${
+        rightPlayingCard.cardValue
+      }.png`;
+      return <img src={src} />;
+    }
+    return <img src="/img/cards/backs/red2.png" />;
+  }, [rightPlayingCard]);
+
   const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
-    console.log(playerList);
     return playerList?.map((x, index) => (
       <tr key={index}>
         <td className={classNames({ "my-user": x.userId == userId })}>
@@ -141,9 +179,20 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     if (gameStatusResponse != undefined) {
       if (gameStatusResponse.gameStatus == "OPEN") {
         return (
-          <div>
-            <Button onClick={handleStartGame}>Start Game</Button>
-          </div>
+          <Row>
+            <Col>
+              <Button onClick={handleStartGame}>Start Game</Button>
+            </Col>
+          </Row>
+        );
+      } else if (isUsersTurn && gameStatusResponse.gameStatus == "IN_SESSION") {
+        return (
+          <Row>
+            <Col>
+              <Button onClick={handleStartGame}>BID</Button>
+              <Button onClick={handleStartGame}>PASS</Button>
+            </Col>
+          </Row>
         );
       }
     }
@@ -160,13 +209,9 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                 <table id="game-board">
                   <tbody>
                     <tr id="cards">
-                      <td>
-                        <img src="/img/cards/backs/red2.png" />
-                      </td>
+                      <td>{leftPlayingCardImg}</td>
                       <td></td>
-                      <td>
-                        <img src="/img/cards/backs/red2.png" />
-                      </td>
+                      <td>{rightPlayingCardImg}</td>
                     </tr>
                   </tbody>
                 </table>

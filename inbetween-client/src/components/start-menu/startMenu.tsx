@@ -30,9 +30,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
   const [submittingNewGame, setSubmittingNewGame] = useState<boolean>(false);
 
   useEffect(() => {
-    const webSocket: WebSocket = new SockJS("/gs-guide-websocket", {
-      debug: false
-    });
+    const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
     const stomp: StompJS.Client = StompJS.over(webSocket);
     stomp.connect({}, () => {
       stomp.subscribe("/topic/new-lobby", (message: any) => {

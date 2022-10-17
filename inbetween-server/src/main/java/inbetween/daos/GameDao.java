@@ -3,6 +3,7 @@ package inbetween.daos;
 import inbetween.models.JoinableGame;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.UserRole;
+import org.apache.commons.text.WordUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -45,7 +46,7 @@ public class GameDao {
     public int joinLobbyWithPlayer(int gameId, String displayName, UserRole userRole, boolean isPlayersTurn) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("game_joined", gameId);
-        parameters.put("display_name", displayName);
+        parameters.put("display_name", WordUtils.capitalizeFully(displayName));
         parameters.put("playing_role", userRole.name());
         parameters.put("is_players_turn", isPlayersTurn);
 
@@ -133,6 +134,8 @@ public class GameDao {
     public Integer countPotTotalInPlay(int gameId) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("gameId", gameId);
-        return namedParameterJdbcTemplate.queryForObject("SELECT pot_value FROM GAME_TABLE WHERE game_id = :gameId", parameters, Integer.class);
+        return Optional.ofNullable(
+                namedParameterJdbcTemplate.queryForObject("SELECT pot_value FROM GAME_TABLE WHERE game_id = :gameId", parameters, Integer.class)
+        ).orElse(0);
     }
 }

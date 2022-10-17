@@ -1,6 +1,7 @@
 package inbetween.controllers;
 
 
+import inbetween.models.GameUpdateStartTurn;
 import inbetween.models.JoinableGame;
 import inbetween.models.Player;
 import inbetween.models.GameStatusResponse;
@@ -39,6 +40,12 @@ public class ApiController {
     public ResponseEntity<GameStatusResponse> gameStatusByUUID(@RequestParam String uuid) {
         GameStatusResponse gameStatus = gameService.gameStatusByUUID(uuid);
         return ResponseEntity.ok(gameStatus);
+    }
+
+    @GetMapping("/latest-turn-update")
+    public ResponseEntity<GameUpdateStartTurn> latestTurnUpdateByUUID(@RequestParam String uuid) {
+        GameUpdateStartTurn latestUpdate = gameService.getLatestStartOfTurnUpdateByUUID(uuid);
+        return ResponseEntity.ok(latestUpdate);
     }
 
 }
