@@ -88,7 +88,7 @@ public class GameService {
     }
 
     public void sendNewUserJoinedGameMessage(JoinedGameResponse joinedGameResponse) {
-        simpMessagingTemplate.convertAndSend("/topic/user-joined-game", joinedGameResponse);
+        simpMessagingTemplate.convertAndSend("/topic/update-player-list", joinedGameResponse);
     }
 
     public List<Player> playerListByUUID(String uuid) {

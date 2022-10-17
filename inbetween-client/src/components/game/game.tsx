@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useLocation, useHistory } from "react-router-dom";
+import classNames from "classnames";
 import StompJS from "stompjs";
 import SockJS from "sockjs-client";
 import JoinedGameResponse from "../../models/joinedGameResponse";
 import Player from "../../models/player";
 import axios from "axios";
+import { Container, Row, Col, Card } from "react-bootstrap";
 
 export interface GameProps {}
 
@@ -16,14 +18,6 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   const [gameUUID, setGameUUID] = useState<string>();
 
   const [playerList, setPlayerList] = useState<Player[]>();
-
-  const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
-    return playerList?.map((x, index) => (
-      <tr key={index}>
-        <td>{x.displayName}</td>
-      </tr>
-    ));
-  }, [playerList]);
 
   useEffect(() => {
     const state: any = location.state;
@@ -51,7 +45,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     if (gameUUID != undefined && userId != undefined) {
       const stomp: StompJS.Client = StompJS.over(webSocket);
       stomp.connect({}, () => {
-        stomp.subscribe("/topic/user-joined-game", (message: any) => {
+        stomp.subscribe("/topic/update-player-list", (message: any) => {
           let playerJoined: JoinedGameResponse = JSON.parse(message.body);
           if (playerJoined.uuid == gameUUID) {
             setPlayerList(prev => playerJoined.playersJoined);
@@ -63,16 +57,59 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     return () => webSocket.close();
   }, [gameUUID, undefined]);
 
+  const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
+    console.log(playerList);
+    return playerList?.map((x, index) => (
+      <tr key={index}>
+        <td className={classNames({ "my-user": x.userId == userId })}>
+          {x.displayName}
+        </td>
+        <td className={"turn-status"}>{x.playersTurn ? "Users Turn" : ""}</td>
+      </tr>
+    ));
+  }, [playerList]);
+
   return (
-    <main>
-      <table>
-        <tbody>
-          <tr>
-            <th>Name</th>
-          </tr>
-          {playersWaitingRows}
-        </tbody>
-      </table>
+    <main id="gamelobby">
+      <Container>
+        <Row>
+          <Col sm={9}>
+            <Card>
+              <div id="game-table-wrapper">
+                <table id="game-board">
+                  <tbody>
+                    <tr id="cards">
+                      <td>
+                        <object
+                          id="svg1"
+                          data="/img/cards/backs/red2.svg"
+                          type="image/svg+xml"
+                        ></object>
+                      </td>
+                      <td></td>
+                      <td>
+                        <object
+                          id="svg1"
+                          data="/img/cards/backs/red2.svg"
+                          type="image/svg+xml"
+                        ></object>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Card>
+          </Col>
+          <Col sm={3}>
+            <Card id="game-status-card">Game Status: {"OPEN"}</Card>
+            <Card>
+              <table id="player-turn-order">
+                <tbody>{playersWaitingRows}</tbody>
+              </table>
+            </Card>
+          </Col>
+        </Row>
+      </Container>
     </main>
   );
 };

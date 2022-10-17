@@ -133,7 +133,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
   return (
     <main id="start-menu">
       <Container>
-        <Row>
+        <Row className="brand">
           <Col md={12}>
             <h1>Inbetween Poker</h1>
           </Col>

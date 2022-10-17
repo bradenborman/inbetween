@@ -1,0 +1,41 @@
+#gamelobby {
+  margin-top: 35px;
+
+  .card {
+    padding: 10px;
+  }
+
+  #game-table-wrapper {
+    padding: 30px;
+    width: 100%;
+    table#game-board {
+      width: 100%;
+      tr#cards {
+        td:nth-child(1) {
+          text-align: left;
+        }
+        td:nth-child(2) {
+          text-align: center;
+        }
+        td:nth-child(3) {
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  #game-status-card {
+    margin-bottom: 20px;
+  }
+
+  table#player-turn-order {
+    td {
+      &.my-user {
+        font-weight: bold;
+      }
+      &.turn-status {
+        font-style: italic;
+      }
+    }
+  }
+}
