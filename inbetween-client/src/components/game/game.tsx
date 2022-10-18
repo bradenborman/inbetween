@@ -6,10 +6,18 @@ import SockJS from "sockjs-client";
 import JoinedGameResponse from "../../models/joinedGameResponse";
 import Player from "../../models/player";
 import axios from "axios";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Card,
+  Button,
+  ProgressBar
+} from "react-bootstrap";
 import GameStatusResponse from "../../models/gameStatusResponse";
 import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
 import PlayingCard from "../../models/playingCard";
+import { now } from "moment";
 
 export interface GameProps {}
 
@@ -27,6 +35,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   const [potTotal, setPotTotal] = useState<number>(0);
   const [leftPlayingCard, setLeftPlayingCard] = useState<PlayingCard>();
   const [rightPlayingCard, setRightPlayingCard] = useState<PlayingCard>();
+  const [middlePlayingCard, setMiddlePlayingCard] = useState<PlayingCard>();
   const [maxBidAllowed, setMaxBidAllowed] = useState<number>(0);
   const [cardsUntilReshuffle, setCardsUntilReshuffle] = useState<number>(52);
 
@@ -103,6 +112,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             setPotTotal(gameUpdateSTartTurnMessage.potTotal);
             setLeftPlayingCard(gameUpdateSTartTurnMessage.leftPlayingCard);
             setRightPlayingCard(gameUpdateSTartTurnMessage.rightPlayingCard);
+            setMiddlePlayingCard(undefined);
             setMaxBidAllowed(gameUpdateSTartTurnMessage.maxBidAllowed);
             setPlayerList(gameUpdateSTartTurnMessage.playerList);
             setCardsUntilReshuffle(
@@ -152,7 +162,6 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   const isUsersTurn: boolean = useMemo(() => {
     if (playerList != undefined) {
       const players = playerList?.filter(player => player.playersTurn);
-      console.log(players);
       return players[0].userId == userId;
     }
     return false;
@@ -178,16 +187,53 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     return <img src="/img/cards/backs/red2.png" />;
   }, [rightPlayingCard]);
 
+  const middlePlayingCardImg: JSX.Element = useMemo(() => {
+    if (middlePlayingCard != undefined) {
+      let src = `/img/cards/fronts/${middlePlayingCard.suit.toLowerCase()}_${
+        middlePlayingCard.cardValue
+      }.png`;
+      return <img src={src} />;
+    }
+    return <></>;
+  }, [middlePlayingCard]);
+
   const playersWaitingRows: JSX.Element[] | null = useMemo(() => {
     return playerList?.map((x, index) => (
-      <tr key={index}>
+      <tr className={classNames({ currentTurn: x.playersTurn })} key={index}>
         <td className={classNames({ "my-user": x.userId == userId })}>
           ({x.score}) - {x.displayName}
         </td>
-        <td className={"turn-status"}>{x.playersTurn ? "Users Turn" : ""}</td>
+        {/* <td className={"turn-status"}>{x.playersTurn ? "Users Turn" : ""}</td> */}
       </tr>
     ));
   }, [playerList]);
+
+  const gamePotData: JSX.Element = useMemo(() => {
+    if (
+      potTotal == undefined ||
+      playerList == undefined ||
+      playerList.length == 0
+    )
+      return <></>;
+
+    const totalPointsInPlay: number = playerList?.reduce((x, y) => {
+      return x + y.score;
+    }, 0);
+    const percentage = (potTotal / (potTotal + totalPointsInPlay)) * 100;
+
+    return (
+      <>
+        <div>Pot total: {potTotal}</div>
+        <ProgressBar now={percentage} />
+      </>
+    );
+  }, [potTotal, playerList]);
+
+  const cardData: JSX.Element = useMemo(() => {
+    if (cardsUntilReshuffle == undefined) return <></>;
+
+    return <>Re-Shuffle in: {cardsUntilReshuffle}</>;
+  }, [cardsUntilReshuffle]);
 
   const controlButtons: JSX.Element = useMemo(() => {
     if (gameStatusResponse != undefined) {
@@ -220,27 +266,30 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       <Container>
         <Row>
           <Col lg={9}>
-            {cardsUntilReshuffle != undefined ? cardsUntilReshuffle : ""}
             <Card>
+              <div id="cardData">{cardData}</div>
               <div id="game-table-wrapper">
                 <table id="game-board">
                   <tbody>
                     <tr id="cards">
                       <td>{leftPlayingCardImg}</td>
-                      <td></td>
+                      <td>{middlePlayingCardImg}</td>
                       <td>{rightPlayingCardImg}</td>
                     </tr>
                   </tbody>
                 </table>
                 <div id="control-buttons">{controlButtons}</div>
               </div>
+              <div id="game-data-wrapper">
+                <div id="gamePotData">{gamePotData}</div>
+              </div>
             </Card>
           </Col>
           <Col lg={3}>
             <Card id="game-status-card">
-              Game Status: {gameStatusResponse?.gameStatus}
+              Game Status: {gameStatusResponse?.gameStatus.replace("_", " ")}
             </Card>
-            <Card>
+            <Card id="player-turn-order-card">
               <table id="player-turn-order">
                 <tbody>{playersWaitingRows}</tbody>
               </table>

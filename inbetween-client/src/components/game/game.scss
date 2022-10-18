@@ -36,17 +36,45 @@
     }
   }
 
+  #game-data-wrapper {
+    #gamePotData {
+      width: 12vw;
+      padding: 5px;
+      border: 1px solid lightgray;
+      display: inline-block;
+      font-size: 1.2em;
+    }
+  }
+
   #game-status-card {
     margin-bottom: 20px;
   }
 
-  table#player-turn-order {
-    td {
-      &.my-user {
-        font-weight: bold;
+  #player-turn-order-card {
+    padding: 10px;
+    padding-left: 25px;
+    table#player-turn-order {
+      tr {
+        position: relative;
+        &.currentTurn::after {
+          content: " ";
+          background: url("/img/arrow.png");
+          background-size: cover;
+          width: 15px;
+          height: 15px;
+          position: absolute;
+          left: -18px;
+          top: 6px;
+        }
       }
-      &.turn-status {
-        font-style: italic;
+
+      td {
+        &.my-user {
+          font-weight: bold;
+        }
+        &.turn-status {
+          font-style: italic;
+        }
       }
     }
   }
