@@ -12,7 +12,8 @@ import {
   Col,
   Card,
   Button,
-  ProgressBar
+  ProgressBar,
+  Navbar
 } from "react-bootstrap";
 import GameStatusResponse from "../../models/gameStatusResponse";
 import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
@@ -266,41 +267,43 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   }, [gameStatusResponse, playerList]);
 
   return (
-    <main id="gamelobby">
-      <Container>
-        <Row>
-          <Col lg={9}>
-            <Card>
-              <div id="cardData">{cardData}</div>
-              <div id="game-table-wrapper">
-                <table id="game-board">
-                  <tbody>
-                    <tr id="cards">
-                      <td>{leftPlayingCardImg}</td>
-                      <td>{middlePlayingCardImg}</td>
-                      <td>{rightPlayingCardImg}</td>
-                    </tr>
-                  </tbody>
+    <>
+      <main id="gamelobby">
+        <Container>
+          <Row>
+            <Col lg={9}>
+              <Card>
+                <div id="cardData">{cardData}</div>
+                <div id="game-table-wrapper">
+                  <table id="game-board">
+                    <tbody>
+                      <tr id="cards">
+                        <td>{leftPlayingCardImg}</td>
+                        <td>{middlePlayingCardImg}</td>
+                        <td>{rightPlayingCardImg}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div id="control-buttons">{controlButtons}</div>
+                </div>
+                <div id="game-data-wrapper">
+                  <div id="gamePotData">{gamePotData}</div>
+                </div>
+              </Card>
+            </Col>
+            <Col lg={3}>
+              <Card id="game-status-card">
+                Game Status: {gameStatusResponse?.gameStatus.replace("_", " ")}
+              </Card>
+              <Card id="player-turn-order-card">
+                <table id="player-turn-order">
+                  <tbody>{playersWaitingRows}</tbody>
                 </table>
-                <div id="control-buttons">{controlButtons}</div>
-              </div>
-              <div id="game-data-wrapper">
-                <div id="gamePotData">{gamePotData}</div>
-              </div>
-            </Card>
-          </Col>
-          <Col lg={3}>
-            <Card id="game-status-card">
-              Game Status: {gameStatusResponse?.gameStatus.replace("_", " ")}
-            </Card>
-            <Card id="player-turn-order-card">
-              <table id="player-turn-order">
-                <tbody>{playersWaitingRows}</tbody>
-              </table>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </main>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
+      </main>
+    </>
   );
 };

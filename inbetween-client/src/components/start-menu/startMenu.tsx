@@ -133,35 +133,45 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
       });
   };
 
+  const joinGameSection: JSX.Element = useMemo(() => {
+    if (joinAbleGameResponse == undefined || joinAbleGameResponse.length == 0) {
+      return (
+        <>
+          There are 0 joinable lobbies to join at this time. Please create one
+          one or wait for one to be created.
+        </>
+      );
+    }
+
+    return (
+      <>
+        <Form.Label htmlFor="joinGameDisplayName">
+          Join game display name
+        </Form.Label>
+        <FormControl
+          id="joinGameDisplayName"
+          onChange={handleJoinGameDisplayNameChange}
+          value={joinGameDisplayName}
+        />
+        <Table bordered className="join-lobby-table">
+          <thead>
+            <tr>
+              <th>Lobby Name</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>{gameSelections}</tbody>
+        </Table>
+      </>
+    );
+  }, [joinAbleGameResponse, joinGameDisplayName]);
+
   return (
     <main id="start-menu">
       <Container>
-        <Row className="brand">
-          <Col md={12}>
-            <h1>Inbetween Poker</h1>
-          </Col>
-        </Row>
         <Row>
-          <Col md={6}>
-            <Form.Label htmlFor="joinGameDisplayName">
-              Join game display name
-            </Form.Label>
-            <FormControl
-              id="joinGameDisplayName"
-              onChange={handleJoinGameDisplayNameChange}
-              value={joinGameDisplayName}
-            />
-            <Table bordered className="join-lobby-table">
-              <thead>
-                <tr>
-                  <th>Lobby Name</th>
-                  <th>Status</th>
-                  <th></th>
-                </tr>
-              </thead>
-              <tbody>{gameSelections}</tbody>
-            </Table>
-          </Col>
+          <Col md={6}>{joinGameSection}</Col>
           <Col md={6} id="create-new-game-form-col">
             <Form onSubmit={handleNewLobbySubmit}>
               <fieldset>
