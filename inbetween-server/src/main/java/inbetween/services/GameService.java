@@ -123,7 +123,10 @@ public class GameService {
         updateStartTurn.setRightPlayingCard(cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.RIGHT));
         updateStartTurn.setCardsLeftUntilReshuffle(cardDao.countUnitlNextShuffle(gameId));
         updateStartTurn.setPotTotal(gameDao.countPotTotalInPlay(gameId));
-        updateStartTurn.setMaxBidAllowed(50); //TODO set max
+
+        int maxBid = (userDao.findCurrentTurnPlayer(gameId).getScore() / 2);
+        updateStartTurn.setMaxBidAllowed(maxBid);
+
         return updateStartTurn;
     }
 

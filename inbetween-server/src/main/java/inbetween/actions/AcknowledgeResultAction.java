@@ -32,9 +32,13 @@ public class AcknowledgeResultAction implements GameAction {
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
 
         if (actionRequest instanceof AcknowledgeResultActionRequest) {
-            cardService.revealTwoNewSideCards(actionRequest.getGameId());
-            cardService.clearMiddleCard(actionRequest.getGameId());
-            nextTurnMessagingService.updateNextTurnAndSendMessage(actionRequest.getGameId(), true);
+            AcknowledgeResultActionRequest acknowledgeResultAction = (AcknowledgeResultActionRequest) actionRequest;
+
+            int gameId = gameService.getGameIdByUUID(acknowledgeResultAction.getUuid());
+
+            cardService.revealTwoNewSideCards(gameId);
+            cardService.clearMiddleCard(gameId);
+            nextTurnMessagingService.updateNextTurnAndSendMessage(gameId, true);
         }
 
         return ResponseEntity.ok().build();

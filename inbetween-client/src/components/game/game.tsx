@@ -200,6 +200,20 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     }
   };
 
+  const handleAdvance = (e: any) => {
+    e.preventDefault();
+    axios
+      .post("/perform:ACKNOWLEDGE_RESULTS", {
+        acknowledgeResult: true,
+        uuid: gameUUID
+      })
+      .then(response => {
+        if (response.status == 200) {
+          setWaitingAcknowledgeResults(false);
+        }
+      });
+  };
+
   const isUsersTurn: boolean = useMemo(() => {
     if (playerList != undefined) {
       const players = playerList?.filter(player => player.playersTurn);
@@ -301,7 +315,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                   type={"number"}
                   min={1}
                   max={maxBidAllowed}
-                  placeholder={(maxBidAllowed / 2).toString()}
+                  placeholder={maxBidAllowed.toString()}
                 />
                 <Button
                   type="submit"
@@ -317,11 +331,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         );
       } else if (betResult != null) {
         const advanceButton: JSX.Element = (
-          <Button
-            onClick={e => {
-              alert("Advancing");
-            }}
-          >
+          <Button id="advance-btn" onClick={handleAdvance}>
             Advance
           </Button>
         );
