@@ -31,8 +31,15 @@
   #control-buttons {
     margin-top: 30px;
     text-align: center;
-    button {
-      margin: 7px;
+
+    #bet-controls-wrapper {
+      margin-right: 40px;
+      #bet-amount-input {
+        max-width: 100px;
+        text-align: center;
+        font-size: 1.3em;
+        vertical-align: middle;
+      }
     }
   }
 

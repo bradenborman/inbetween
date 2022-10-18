@@ -13,7 +13,8 @@ import {
   Card,
   Button,
   ProgressBar,
-  Navbar
+  InputGroup,
+  Form
 } from "react-bootstrap";
 import GameStatusResponse from "../../models/gameStatusResponse";
 import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
@@ -254,9 +255,18 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         return (
           <Row>
             <Col>
-              <Button disabled onClick={handleStartGame}>
-                BID
-              </Button>
+              <span id="bet-controls-wrapper">
+                <input
+                  id="bet-amount-input"
+                  type={"number"}
+                  min={1}
+                  max={maxBidAllowed}
+                  placeholder={(maxBidAllowed / 2).toString()}
+                />
+                <Button variant="outline-secondary" id="">
+                  Bet
+                </Button>
+              </span>
               <Button onClick={handlePassOfTurn}>PASS</Button>
             </Col>
           </Row>
@@ -264,7 +274,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       }
     }
     return <></>;
-  }, [gameStatusResponse, playerList]);
+  }, [gameStatusResponse, playerList, maxBidAllowed]);
 
   return (
     <>
