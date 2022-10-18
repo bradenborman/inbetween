@@ -129,6 +129,7 @@ public class GameService {
     }
 
     public String getUUIDByGameId(int gameId) {
-       return gameDao.getUUIDByGameId(gameId);
+        return gameDao.getUUIDByGameId(gameId);
     }
+
 }

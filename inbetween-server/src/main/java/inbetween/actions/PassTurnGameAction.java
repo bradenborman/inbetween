@@ -35,7 +35,6 @@ public class PassTurnGameAction implements GameAction {
             //Update the side cards
             PassTurnActionRequest request = (PassTurnActionRequest) actionRequest;
             int gameId = gameService.getGameIdByUUID(request.getUuidToPass());
-
             cardService.revealTwoNewSideCards(gameId);
 
             nextTurnMessagingService.updateNextTurnAndSendMessage(gameId, true);

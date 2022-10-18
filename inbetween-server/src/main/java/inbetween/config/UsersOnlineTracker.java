@@ -5,6 +5,8 @@ import inbetween.daos.GameDao;
 import inbetween.daos.UserDao;
 import inbetween.models.Player;
 import inbetween.models.actions.PassTurnActionRequest;
+import inbetween.models.enums.GameStatus;
+import inbetween.services.NextTurnMessagingService;
 import inbetween.utilities.UserConnectionUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,11 +23,14 @@ public class UsersOnlineTracker {
     private final UserDao userDao;
     private final GameDao gameDao;
     private final PassTurnGameAction passTurnGameAction;
+    private final NextTurnMessagingService nextTurnMessagingService;
 
-    public UsersOnlineTracker(UserDao userDao, GameDao gameDao, PassTurnGameAction passTurnGameAction) {
+    public UsersOnlineTracker(UserDao userDao, GameDao gameDao, PassTurnGameAction passTurnGameAction,
+                              NextTurnMessagingService nextTurnMessagingService) {
         this.userDao = userDao;
         this.gameDao = gameDao;
         this.passTurnGameAction = passTurnGameAction;
+        this.nextTurnMessagingService = nextTurnMessagingService;
     }
 
     @EventListener(SessionSubscribeEvent.class)
@@ -48,14 +53,30 @@ public class UsersOnlineTracker {
             logger.info("User left {}", sessionIdClosed);
             Player player = userDao.fillUserDetails(userDao.findUserIDBySessionId(sessionIdClosed));
 
-            if (player.isPlayersTurn()) {
+            String uuid = gameDao.getUUIDByGameId(player.getGameJoined());
+            GameStatus gameStatus = gameDao.getGameStatusByUUID(uuid);
+
+            if (player.isPlayersTurn() && gameStatus == GameStatus.IN_SESSION) {
                 //pass turn if players turn
-                String uuid = gameDao.getUUIDByGameId(player.getGameJoined());
+
                 PassTurnActionRequest passAction = new PassTurnActionRequest();
                 passAction.setUserId(String.valueOf(player.getUserId()));
                 passAction.setUuidToPass(uuid);
                 passTurnGameAction.perform(passAction);
             }
+
+            //ONLY update the next turn to the next person - do not perform the inGame pass turn Action
+            if (player.isPlayersTurn() && gameStatus == GameStatus.OPEN) {
+                nextTurnMessagingService.updateNextTurn(gameDao.getGameIdByUUID(uuid));
+            }
+
+            //clean up game if last player left
+            int remainingPlaying = userDao.countPlayersActiveInLobby(player.getGameJoined());
+            if (remainingPlaying <= 0) {
+                //TODO TIME TO CLEAN UP GAME
+                logger.info("TIME TO CLEAN UP GAME");
+            }
+
         }
     }
 

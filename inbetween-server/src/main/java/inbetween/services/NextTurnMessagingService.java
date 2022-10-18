@@ -29,15 +29,7 @@ public class NextTurnMessagingService {
     public void updateNextTurnAndSendMessage(int gameId, boolean updateTurn) {
 
         if (updateTurn) {
-            logger.info("Updating next turn for gameId: {}", gameId);
-            List<Player> playerListBefore = userDao.selectPlayersFromGame(gameId);
-            Player currentTurnPlayer = userDao.findCurrentTurnPlayer(gameId);
-
-            List<Player> sortedBefore = NextTurnUtility.sortForNextTurn(playerListBefore, currentTurnPlayer);
-            if (sortedBefore.size() > 1) {
-                logger.info("Updating next turn for user: {}", sortedBefore.get(1).getUserId());
-                userDao.updateNextTurnForUser(gameId, sortedBefore.get(1));
-            }
+            updateNextTurn(gameId);
         }
 
         //Populate message
@@ -50,5 +42,17 @@ public class NextTurnMessagingService {
         simpMessagingTemplate.convertAndSend("/topic/start-turn", gameUpdateStartTurn);
     }
 
+
+    public void updateNextTurn(int gameId) {
+        logger.info("Updating next turn for gameId: {}", gameId);
+        List<Player> playerListBefore = userDao.selectPlayersFromGame(gameId);
+        Player currentTurnPlayer = userDao.findCurrentTurnPlayer(gameId);
+
+        List<Player> sortedBefore = NextTurnUtility.sortForNextTurn(playerListBefore, currentTurnPlayer);
+        if (sortedBefore.size() > 1) {
+            logger.info("Updating next turn for user: {}", sortedBefore.get(1).getUserId());
+            userDao.updateNextTurnForUser(gameId, sortedBefore.get(1));
+        }
+    }
 
 }

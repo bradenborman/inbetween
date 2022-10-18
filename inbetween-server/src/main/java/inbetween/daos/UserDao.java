@@ -121,4 +121,11 @@ public class UserDao {
                 }
         );
     }
+
+    public Integer countPlayersActiveInLobby(int gameId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT count(*) FROM PLAYERS " +
+                "WHERE game_joined = :gameId AND is_player_in_lobby_online = true", parameters, Integer.class);
+    }
 }
