@@ -46,10 +46,15 @@ public class BetGameAction implements GameAction {
             int potTotal = gameService.potTotalByGameId(gameId);
             betResult.setPotTotal(potTotal);
 
+
             logger.info(betResult.toString());
 
             gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
+
+            //score change before grabbing player
+            betResult.setPlayerList(gameService.playerListByUUID(betActionRequest.getUuidOfGame()));
             gameService.sendBetPerformedUpdate(betResult);
+
 
             return ResponseEntity.ok().build();
         }

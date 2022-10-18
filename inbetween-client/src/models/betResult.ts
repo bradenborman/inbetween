@@ -1,4 +1,5 @@
 import PlayingCard from "./playingCard";
+import Player from "./player";
 
 export default interface BetResult {
   uuidOfGame: string;
@@ -7,4 +8,5 @@ export default interface BetResult {
   penaltyApplied: boolean;
   middleCard: PlayingCard;
   potTotal: number;
+  playerList: Player[];
 }

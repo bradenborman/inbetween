@@ -1,5 +1,7 @@
 package inbetween.models;
 
+import java.util.List;
+
 public class BetResult {
 
     private String uuidOfGame;
@@ -7,6 +9,7 @@ public class BetResult {
     private boolean wonBet;
     private boolean penaltyApplied;
     private int potTotal;
+    private List<Player> playerList;
 
     private PlayingCard middleCard;
 
@@ -48,6 +51,14 @@ public class BetResult {
 
     public void setPotTotal(int potTotal) {
         this.potTotal = potTotal;
+    }
+
+    public List<Player> getPlayerList() {
+        return playerList;
+    }
+
+    public void setPlayerList(List<Player> playerList) {
+        this.playerList = playerList;
     }
 
     public PlayingCard getMiddleCard() {

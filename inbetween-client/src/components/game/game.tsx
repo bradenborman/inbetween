@@ -24,19 +24,6 @@ import BetResult from "../../models/betResult";
 export interface GameProps {}
 
 export const Game: React.FC<GameProps> = (props: GameProps) => {
-  const fakeBetResult: BetResult = {
-    uuidOfGame: "x",
-    amountShifted: 20,
-    wonBet: true,
-    penaltyApplied: false,
-    middleCard: {
-      cardId: "",
-      cardValue: "4",
-      suit: "CLUBS"
-    },
-    potTotal: 130
-  };
-
   const location = useLocation();
   const history = useHistory();
 
@@ -134,6 +121,8 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
           let betResult: BetResult = JSON.parse(message.body);
           if (betResult.uuidOfGame == gameUUID) {
             setMiddlePlayingCard(betResult.middleCard);
+            setPotTotal(betResult.potTotal);
+            setPlayerList(betResult.playerList);
             setBetResult(betResult);
           }
         });
@@ -151,6 +140,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             setCardsUntilReshuffle(
               gameUpdateSTartTurnMessage.cardsLeftUntilReshuffle
             );
+            setBetResult(undefined);
           }
         });
       });
@@ -328,10 +318,17 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       } else if (betResult != null) {
         return (
           <>
-            {betResult.wonBet ? "WON BET" : "LOST BET"}
-            {waitingAcknowledgeResults
-              ? "continue"
-              : "waiting on better to ack"}
+            <Row>
+              <Col>
+                {betResult.wonBet ? "Winner" : "Maybe Next Time..."} (
+                {betResult.amountShifted})
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <Button>Advance</Button>
+              </Col>
+            </Row>
           </>
         );
       }
