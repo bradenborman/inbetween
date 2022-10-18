@@ -7,11 +7,10 @@ import inbetween.models.PlayingCard;
 import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.PlayingCardColumnName;
 import inbetween.utilities.BetResultUtility;
+import inbetween.utilities.DeckUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.stream.Stream;
 
 @Service
 public class CardService {
@@ -27,8 +26,8 @@ public class CardService {
     }
 
     public void revealTwoNewSideCards(int gameId) {
-        Stream.of(PlayingCardColumnName.LEFT, PlayingCardColumnName.RIGHT)
-                .forEach(columnName -> cardDao.loadCardToBoard(gameId, columnName, cardDao.drawNextCard(gameId)));
+        cardDao.loadCardToBoard(gameId, PlayingCardColumnName.LEFT, drawNextCard(gameId));
+        cardDao.loadCardToBoard(gameId, PlayingCardColumnName.RIGHT, drawNextCard(gameId));
     }
 
     public BetResult performNewBet(BetActionRequest betActionRequest) {
@@ -37,12 +36,21 @@ public class CardService {
         PlayingCard playingCardL = cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.LEFT);
         PlayingCard playingCardR = cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.RIGHT);
 
-        PlayingCard playingCardM = cardDao.drawNextCard(gameId);
+        PlayingCard playingCardM = drawNextCard(gameId);
         cardDao.loadCardToBoard(gameId, PlayingCardColumnName.MIDDLE, playingCardM);
 
         return BetResultUtility.deriveBetResult(
                 playingCardL, playingCardR, playingCardM, betActionRequest.getWagerAmount()
         );
+    }
+
+    private PlayingCard drawNextCard(int gameId) {
+        PlayingCard playingCard = cardDao.drawNextCard(gameId);
+
+        if (cardDao.countUnitlNextShuffle(gameId) == 0)
+            cardDao.insertDeck(gameId, DeckUtility.initializeNewDeck());
+
+        return playingCard;
     }
 
 

@@ -32,7 +32,7 @@ public class StartGameAction implements GameAction {
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
         if (actionRequest instanceof StartGameActionRequest) {
             StartGameActionRequest request = (StartGameActionRequest) actionRequest;
-            int gameId = gameService.findGameIdByUUID(request.getUuidToStart());
+            int gameId = gameService.getGameIdByUUID(request.getUuidToStart());
 
             //Load in side cards for the first time
             cardService.revealTwoNewSideCards(gameId);

@@ -135,6 +135,20 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     }
   };
 
+  const handlePassOfTurn = (e: any) => {
+    axios
+      .post("/perform:PASS_TURN", {
+        uuidToPass: gameUUID,
+        userId: userId,
+        passTurn: true
+      })
+      .then(response => {
+        if (response.status == 200) {
+          console.log("Started Game submitted 200");
+        }
+      });
+  };
+
   const isUsersTurn: boolean = useMemo(() => {
     if (playerList != undefined) {
       const players = playerList?.filter(player => player.playersTurn);
@@ -189,8 +203,10 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         return (
           <Row>
             <Col>
-              <Button onClick={handleStartGame}>BID</Button>
-              <Button onClick={handleStartGame}>PASS</Button>
+              <Button disabled onClick={handleStartGame}>
+                BID
+              </Button>
+              <Button onClick={handlePassOfTurn}>PASS</Button>
             </Col>
           </Row>
         );
@@ -204,6 +220,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       <Container>
         <Row>
           <Col lg={9}>
+            {cardsUntilReshuffle != undefined ? cardsUntilReshuffle : ""}
             <Card>
               <div id="game-table-wrapper">
                 <table id="game-board">

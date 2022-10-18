@@ -98,7 +98,7 @@ public class GameService {
     }
 
     public List<Player> playerListByUUID(String uuid) {
-        int gameId = findGameIdByUUID(uuid);
+        int gameId = getGameIdByUUID(uuid);
         return userDao.selectPlayersFromGame(gameId);
     }
 
@@ -124,7 +124,7 @@ public class GameService {
     }
 
 
-    public int findGameIdByUUID(String uuid) {
+    public int getGameIdByUUID(String uuid) {
         return gameDao.getGameIdByUUID(uuid);
     }
 
