@@ -92,6 +92,10 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     if (gameUUID != undefined && userId != undefined) {
       const stomp: StompJS.Client = StompJS.over(webSocket);
       stomp.connect({}, () => {
+        stomp.subscribe(
+          "/topic/user-connected/" + userId,
+          (message: any) => {}
+        );
         stomp.subscribe("/topic/update-player-list", (message: any) => {
           let playerJoined: JoinedGameResponse = JSON.parse(message.body);
           if (playerJoined.uuid == gameUUID) {

@@ -50,7 +50,11 @@ class NextTurnUtilityTest {
     @Test
     void sortForNextTurnTest() {
 
-        List<Player> sorted = NextTurnUtility.sortForNextTurn(fromDBMockList);
+        Player player3 = new Player();
+        player3.setPlayersTurn(true);
+        player3.setDisplayName("Jeek");
+        player3.setUserId(3);
+        List<Player> sorted = NextTurnUtility.sortForNextTurn(fromDBMockList, player3);
 
         assert sorted != null;
         Assertions.assertEquals(3, sorted.get(0).getUserId());

@@ -31,7 +31,9 @@ public class NextTurnMessagingService {
         if (updateTurn) {
             logger.info("Updating next turn for gameId: {}", gameId);
             List<Player> playerListBefore = userDao.selectPlayersFromGame(gameId);
-            List<Player> sortedBefore = NextTurnUtility.sortForNextTurn(playerListBefore);
+            Player currentTurnPlayer = userDao.findCurrentTurnPlayer(gameId);
+
+            List<Player> sortedBefore = NextTurnUtility.sortForNextTurn(playerListBefore, currentTurnPlayer);
             if (sortedBefore.size() > 1) {
                 logger.info("Updating next turn for user: {}", sortedBefore.get(1).getUserId());
                 userDao.updateNextTurnForUser(gameId, sortedBefore.get(1));

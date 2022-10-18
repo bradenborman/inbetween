@@ -12,20 +12,17 @@ public class NextTurnUtility {
         throw new IllegalStateException("Utility Class Only");
     }
 
-    public static List<Player> sortForNextTurn(List<Player> playerList) {
+    public static List<Player> sortForNextTurn(List<Player> playerList, Player currentTurnPlayer) {
 
-        Player nextTurnUser = playerList.stream()
-                .filter(Player::isPlayersTurn).findAny().orElseThrow(() -> new RuntimeException("No User has a next turn"));
+        playerList.remove(currentTurnPlayer);
 
-        playerList.remove(nextTurnUser);
-
-        int nextUserId = nextTurnUser.getUserId();
+        int nextUserId = currentTurnPlayer.getUserId();
 
         List<Player> nextUp = playerList.stream().filter(x -> x.getUserId() > nextUserId).collect(Collectors.toList());
         List<Player> wrappedAround = playerList.stream().filter(x -> x.getUserId() < nextUserId).collect(Collectors.toList());
 
         List<Player> finalList = new ArrayList<>();
-        finalList.add(nextTurnUser);
+        finalList.add(currentTurnPlayer);
         finalList.addAll(nextUp);
         finalList.addAll(wrappedAround);
 

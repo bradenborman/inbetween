@@ -1,6 +1,5 @@
-package inbetween.utilities;
+package inbetween;
 
-import inbetween.InBetweenApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 public class Server extends InBetweenApplication {

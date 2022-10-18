@@ -49,11 +49,12 @@ public class GameDao {
         parameters.put("display_name", WordUtils.capitalizeFully(displayName));
         parameters.put("playing_role", userRole.name());
         parameters.put("is_players_turn", isPlayersTurn);
+        parameters.put("is_player_in_lobby_online", true);
 
         return new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("PLAYERS")
                 .usingGeneratedKeyColumns("player_Id")
-                .usingColumns("game_joined", "display_name", "playing_role", "is_players_turn")
+                .usingColumns("game_joined", "display_name", "playing_role", "is_players_turn", "is_player_in_lobby_online")
                 .executeAndReturnKey(parameters)
                 .intValue();
     }
@@ -138,4 +139,5 @@ public class GameDao {
                 namedParameterJdbcTemplate.queryForObject("SELECT pot_value FROM GAME_TABLE WHERE game_id = :gameId", parameters, Integer.class)
         ).orElse(0);
     }
+
 }

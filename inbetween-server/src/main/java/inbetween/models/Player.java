@@ -9,6 +9,7 @@ public class Player {
     private boolean isPlayersTurn;
     private UserRole userRole;
     private int score;
+    private int gameJoined;
 
     public int getUserId() {
         return userId;
@@ -48,5 +49,13 @@ public class Player {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public int getGameJoined() {
+        return gameJoined;
+    }
+
+    public void setGameJoined(int gameJoined) {
+        this.gameJoined = gameJoined;
     }
 }
