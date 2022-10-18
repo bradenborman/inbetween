@@ -316,6 +316,16 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
           </Row>
         );
       } else if (betResult != null) {
+        const advanceButton: JSX.Element = (
+          <Button
+            onClick={e => {
+              alert("Advancing");
+            }}
+          >
+            Advance
+          </Button>
+        );
+
         return (
           <>
             <Row>
@@ -326,7 +336,11 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             </Row>
             <Row>
               <Col>
-                <Button>Advance</Button>
+                {waitingAcknowledgeResults ? (
+                  advanceButton
+                ) : (
+                  <>..waiting on Better to progress</>
+                )}
               </Col>
             </Row>
           </>
