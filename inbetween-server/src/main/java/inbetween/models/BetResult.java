@@ -2,11 +2,21 @@ package inbetween.models;
 
 public class BetResult {
 
+    private String uuidOfGame;
     private int amountShifted;
     private boolean wonBet;
     private boolean penaltyApplied;
+    private int potTotal;
 
     private PlayingCard middleCard;
+
+    public String getUuidOfGame() {
+        return uuidOfGame;
+    }
+
+    public void setUuidOfGame(String uuidOfGame) {
+        this.uuidOfGame = uuidOfGame;
+    }
 
     public int getAmountShifted() {
         return amountShifted;
@@ -30,6 +40,14 @@ public class BetResult {
 
     public void setPenaltyApplied(boolean penaltyApplied) {
         this.penaltyApplied = penaltyApplied;
+    }
+
+    public int getPotTotal() {
+        return potTotal;
+    }
+
+    public void setPotTotal(int potTotal) {
+        this.potTotal = potTotal;
     }
 
     public PlayingCard getMiddleCard() {

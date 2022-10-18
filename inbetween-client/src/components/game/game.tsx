@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import classNames from "classnames";
 import StompJS from "stompjs";
@@ -19,13 +19,28 @@ import {
 import GameStatusResponse from "../../models/gameStatusResponse";
 import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
 import PlayingCard from "../../models/playingCard";
-import { now } from "moment";
+import BetResult from "../../models/betResult";
 
 export interface GameProps {}
 
 export const Game: React.FC<GameProps> = (props: GameProps) => {
+  const fakeBetResult: BetResult = {
+    uuidOfGame: "x",
+    amountShifted: 20,
+    wonBet: true,
+    penaltyApplied: false,
+    middleCard: {
+      cardId: "",
+      cardValue: "4",
+      suit: "CLUBS"
+    },
+    potTotal: 130
+  };
+
   const location = useLocation();
   const history = useHistory();
+
+  const bidAmountRef = useRef(null);
 
   const [userId, setUserId] = useState<string>();
   const [gameUUID, setGameUUID] = useState<string>();
@@ -34,12 +49,17 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   >();
 
   const [playerList, setPlayerList] = useState<Player[]>();
-  const [potTotal, setPotTotal] = useState<number>(0);
+  const [potTotal, setPotTotal] = useState<number>();
   const [leftPlayingCard, setLeftPlayingCard] = useState<PlayingCard>();
   const [rightPlayingCard, setRightPlayingCard] = useState<PlayingCard>();
   const [middlePlayingCard, setMiddlePlayingCard] = useState<PlayingCard>();
   const [maxBidAllowed, setMaxBidAllowed] = useState<number>(0);
   const [cardsUntilReshuffle, setCardsUntilReshuffle] = useState<number>(52);
+
+  const [waitingAcknowledgeResults, setWaitingAcknowledgeResults] = useState<
+    boolean
+  >(false);
+  const [betResult, setBetResult] = useState<BetResult>();
 
   useEffect(() => {
     const state: any = location.state;
@@ -110,6 +130,13 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             setGameStatusResponse(prev => gameStatusResponse);
           }
         });
+        stomp.subscribe("/topic/bet-result", (message: any) => {
+          let betResult: BetResult = JSON.parse(message.body);
+          if (betResult.uuidOfGame == gameUUID) {
+            setMiddlePlayingCard(betResult.middleCard);
+            setBetResult(betResult);
+          }
+        });
         stomp.subscribe("/topic/start-turn", (message: any) => {
           let gameUpdateSTartTurnMessage: GameUpdateStartTurn = JSON.parse(
             message.body
@@ -163,6 +190,24 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
           console.log("Started Game submitted 200");
         }
       });
+  };
+
+  const handleBid = (e: any) => {
+    e.preventDefault();
+    const bidAmount = bidAmountRef.current.value;
+    if (bidAmount <= maxBidAllowed && bidAmount > 0) {
+      axios
+        .post("/perform:BET", {
+          userBettingId: userId,
+          wagerAmount: bidAmount,
+          uuidOfGame: gameUUID
+        })
+        .then(response => {
+          if (response.status == 200) {
+            setWaitingAcknowledgeResults(true);
+          }
+        });
+    }
   };
 
   const isUsersTurn: boolean = useMemo(() => {
@@ -251,30 +296,54 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             </Col>
           </Row>
         );
-      } else if (isUsersTurn && gameStatusResponse.gameStatus == "IN_SESSION") {
+      } else if (
+        isUsersTurn &&
+        gameStatusResponse.gameStatus == "IN_SESSION" &&
+        !waitingAcknowledgeResults
+      ) {
         return (
           <Row>
             <Col>
-              <span id="bet-controls-wrapper">
+              <form onSubmit={handleBid} id="bet-controls-wrapper">
                 <input
+                  ref={bidAmountRef}
                   id="bet-amount-input"
                   type={"number"}
                   min={1}
                   max={maxBidAllowed}
                   placeholder={(maxBidAllowed / 2).toString()}
                 />
-                <Button variant="outline-secondary" id="">
+                <Button
+                  type="submit"
+                  variant="outline-secondary"
+                  id="bidButton"
+                >
                   Bet
                 </Button>
-              </span>
+              </form>
               <Button onClick={handlePassOfTurn}>PASS</Button>
             </Col>
           </Row>
         );
+      } else if (betResult != null) {
+        return (
+          <>
+            {betResult.wonBet ? "WON BET" : "LOST BET"}
+            {waitingAcknowledgeResults
+              ? "continue"
+              : "waiting on better to ack"}
+          </>
+        );
       }
     }
     return <></>;
-  }, [gameStatusResponse, playerList, maxBidAllowed]);
+  }, [
+    gameStatusResponse,
+    playerList,
+    maxBidAllowed,
+    waitingAcknowledgeResults,
+    betResult
+  ]);
 
   return (
     <>

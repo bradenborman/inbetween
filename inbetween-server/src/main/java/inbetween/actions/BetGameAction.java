@@ -38,16 +38,22 @@ public class BetGameAction implements GameAction {
 
             BetActionRequest betActionRequest = (BetActionRequest) actionRequest;
 
+            int gameId = gameService.getGameIdByUUID(betActionRequest.getUuidOfGame());
+            betActionRequest.setGameId(gameId);
+
             BetResult betResult = cardService.performNewBet(betActionRequest);
+            betResult.setUuidOfGame(betActionRequest.getUuidOfGame());
+            int potTotal = gameService.potTotalByGameId(gameId);
+            betResult.setPotTotal(potTotal);
+
             logger.info(betResult.toString());
 
-
             gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
+            gameService.sendBetPerformedUpdate(betResult);
 
-
-            //TODO return the middleCard to be displayed along with results of the bet
+            return ResponseEntity.ok().build();
         }
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.badRequest().build();
     }
 }

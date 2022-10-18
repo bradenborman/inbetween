@@ -97,6 +97,10 @@ public class GameService {
         simpMessagingTemplate.convertAndSend("/topic/update-player-list", joinedGameResponse);
     }
 
+    public void sendBetPerformedUpdate(BetResult betResult) {
+        simpMessagingTemplate.convertAndSend("/topic/bet-result", betResult);
+    }
+
     public List<Player> playerListByUUID(String uuid) {
         int gameId = getGameIdByUUID(uuid);
         return userDao.selectPlayersFromGame(gameId);
@@ -123,6 +127,9 @@ public class GameService {
         return updateStartTurn;
     }
 
+    public int potTotalByGameId(int gameId) {
+        return gameDao.countPotTotalInPlay(gameId);
+    }
 
     public int getGameIdByUUID(String uuid) {
         return gameDao.getGameIdByUUID(uuid);

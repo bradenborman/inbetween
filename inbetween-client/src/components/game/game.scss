@@ -32,8 +32,10 @@
     margin-top: 30px;
     text-align: center;
 
-    #bet-controls-wrapper {
+    form#bet-controls-wrapper {
       margin-right: 40px;
+      display: inline-block;
+
       #bet-amount-input {
         max-width: 100px;
         text-align: center;

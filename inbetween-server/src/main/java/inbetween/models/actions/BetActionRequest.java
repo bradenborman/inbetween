@@ -2,8 +2,17 @@ package inbetween.models.actions;
 
 public class BetActionRequest extends ActionRequest {
 
+    private String uuidOfGame;
     private String userBettingId;
     private int wagerAmount;
+
+    public String getUuidOfGame() {
+        return uuidOfGame;
+    }
+
+    public void setUuidOfGame(String uuidOfGame) {
+        this.uuidOfGame = uuidOfGame;
+    }
 
     public String getUserBettingId() {
         return userBettingId;
