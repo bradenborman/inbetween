@@ -96,10 +96,14 @@
 @media only screen and (max-width: 600px) {
   #gamelobby {
     #game-table-wrapper {
+      #bet-amount-input {
+        max-width: 200px;
+      }
+
       table#game-board {
         tr#cards {
           img {
-            width: 18vw;
+            width: 20vw;
           }
         }
       }
@@ -108,7 +112,7 @@
     #game-data-wrapper {
       #gamePotData {
         margin-top: 10px;
-        width: 45vw;
+        width: 100%;
         padding: 7px;
         font-size: 1.3em;
       }
@@ -116,6 +120,7 @@
 
     #game-status-card {
       margin: 20px 0px;
+      font-size: 0.7em;
     }
   }
 }

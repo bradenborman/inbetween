@@ -23,6 +23,18 @@
     }
   }
   #create-new-game-form-col {
-    padding-left: 7vw;
+    margin-left: 7vw;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #start-menu {
+    .card {
+      margin-bottom: 30px;
+    }
+
+    #create-new-game-form-col {
+      margin-left: 0px;
+    }
   }
 }

@@ -26,19 +26,19 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = (
             <h6 className="section-heading">Getting Started</h6>
             <p>
               Use this current page to either <i>"Start a new game"</i> or{" "}
-              <i>"Join"</i> a game that is accepting players.
-              <ul>
-                <li>
-                  When you create a new lobby, you need to specify a display
-                  name for yourself, as well as a name for the game.
-                </li>
-                <li>
-                  If you wish to join a game, there is an input above the listed
-                  games. Please enter a display name and join the game of your
-                  choosing.
-                </li>
-              </ul>
             </p>
+            <i>"Join"</i> a game that is accepting players.
+            <ul>
+              <li>
+                When you create a new lobby, you need to specify a display name
+                for yourself, as well as a name for the game.
+              </li>
+              <li>
+                If you wish to join a game, there is an input above the listed
+                games. Please enter a display name and join the game of your
+                choosing.
+              </li>
+            </ul>
             <p>
               Once a lobby is created, it will be in "OPEN" status.
               <br />
@@ -77,25 +77,23 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = (
               is the current points for that user. At the bottom there is a
               gauge and number representing 'pot total', this is how many point
               are up for grab at the current time of play. <br />
-              <br />
-              Player Options:
-              <ul id="betting-explanation">
-                <li>
-                  <u>BET</u> - 2 Step process, first enter the whole number you
-                  wish to wager and put on the line. Next, click the "Bet"
-                  button.
-                </li>
-                <li>
-                  <u>ADVANCE</u> - Once you place a bet, you will get feedback.
-                  When you are ready to move off from your turn, click the
-                  "Advance" button.
-                </li>
-                <li>
-                  <u>PASS</u> - If its your turn, you can click the advance
-                  button to pass.
-                </li>
-              </ul>
             </p>
+            Player Options:
+            <ul id="betting-explanation">
+              <li>
+                <u>BET</u> - 2 Step process, first enter the whole number you
+                wish to wager and put on the line. Next, click the "Bet" button.
+              </li>
+              <li>
+                <u>ADVANCE</u> - Once you place a bet, you will get feedback.
+                When you are ready to move off from your turn, click the
+                "Advance" button.
+              </li>
+              <li>
+                <u>PASS</u> - If its your turn, you can click the advance button
+                to pass.
+              </li>
+            </ul>
           </div>
         </Modal.Body>
         <Modal.Footer>

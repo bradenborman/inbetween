@@ -200,8 +200,8 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
           <Col md={6}>
             <Card>{joinGameSection}</Card>
           </Col>
-          <Col md={6} id="create-new-game-form-col">
-            <Card>
+          <Col md={6}>
+            <Card id="create-new-game-form-col">
               <Form onSubmit={handleNewLobbySubmit}>
                 <fieldset>
                   <Form.Group className="mb-3">
