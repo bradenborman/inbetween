@@ -313,6 +313,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                   ref={bidAmountRef}
                   id="bet-amount-input"
                   type={"number"}
+                  step={1}
                   min={1}
                   max={maxBidAllowed > potTotal ? potTotal : maxBidAllowed}
                   placeholder={maxBidAllowed.toString()}

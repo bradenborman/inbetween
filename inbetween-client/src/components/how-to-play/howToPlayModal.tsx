@@ -58,6 +58,9 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = (
               same value as one of the outer cards, a 2x penalty is applied.
               This is also why you cannot bet more than half of your points.
             </p>
+            <p>
+              <i>*Aces are always high (14)</i>
+            </p>
           </div>
           <div className="section-wrapper">
             <h6 className="section-heading">Rules to the Game</h6>
@@ -77,9 +80,20 @@ export const HowToPlayModal: React.FC<HowToPlayModalProps> = (
               <br />
               Player Options:
               <ul id="betting-explanation">
-                <li>BET - </li>
-                <li>ADVANCE - </li>
-                <li>PASS - </li>
+                <li>
+                  <u>BET</u> - 2 Step process, first enter the whole number you
+                  wish to wager and put on the line. Next, click the "Bet"
+                  button.
+                </li>
+                <li>
+                  <u>ADVANCE</u> - Once you place a bet, you will get feedback.
+                  When you are ready to move off from your turn, click the
+                  "Advance" button.
+                </li>
+                <li>
+                  <u>PASS</u> - If its your turn, you can click the advance
+                  button to pass.
+                </li>
               </ul>
             </p>
           </div>
