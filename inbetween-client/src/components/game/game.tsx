@@ -314,7 +314,7 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                   id="bet-amount-input"
                   type={"number"}
                   min={1}
-                  max={maxBidAllowed}
+                  max={maxBidAllowed > potTotal ? potTotal : maxBidAllowed}
                   placeholder={maxBidAllowed.toString()}
                 />
                 <Button

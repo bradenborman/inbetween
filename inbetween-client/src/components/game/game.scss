@@ -92,3 +92,30 @@
     }
   }
 }
+
+@media only screen and (max-width: 600px) {
+  #gamelobby {
+    #game-table-wrapper {
+      table#game-board {
+        tr#cards {
+          img {
+            width: 18vw;
+          }
+        }
+      }
+    }
+
+    #game-data-wrapper {
+      #gamePotData {
+        margin-top: 10px;
+        width: 45vw;
+        padding: 7px;
+        font-size: 1.3em;
+      }
+    }
+
+    #game-status-card {
+      margin: 20px 0px;
+    }
+  }
+}
