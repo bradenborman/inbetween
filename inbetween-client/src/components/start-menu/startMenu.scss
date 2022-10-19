@@ -1,21 +1,28 @@
 #start-menu {
   margin-top: 50px;
 
-  table {
-    margin-top: 25px;
+  #how-to-play-row {
+    margin: 50px 0px;
+  }
 
-    tr {
-      line-height: 10px;
-      vertical-align: middle;
-      td {
-        &.center {
-          text-align: center;
+  .card {
+    padding: 15px;
+
+    table {
+      margin-top: 25px;
+
+      tr {
+        line-height: 10px;
+        vertical-align: middle;
+        td {
+          &.center {
+            text-align: center;
+          }
         }
       }
     }
   }
-
   #create-new-game-form-col {
-    padding-left: 5vw;
+    padding-left: 7vw;
   }
 }

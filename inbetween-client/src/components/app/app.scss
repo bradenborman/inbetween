@@ -4,6 +4,7 @@
 @import "../start-menu/startMenu.scss";
 @import "../game/game.scss";
 @import "../navigationBar/navigationBar.scss";
+@import "../how-to-play/howToPlayModal.scss";
 
 body,
 html {
@@ -12,7 +13,8 @@ html {
 }
 
 html {
-  overflow-y: scroll;
+  // Not needed for this project
+  // overflow-y: scroll;
 }
 
 .text-warn {

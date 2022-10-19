@@ -11,8 +11,10 @@ import {
   Table,
   Button,
   Form,
-  FormControl
+  FormControl,
+  Card
 } from "react-bootstrap";
+import { HowToPlayModal } from "../how-to-play/howToPlayModal";
 
 export interface StartMenuProps {}
 
@@ -28,6 +30,8 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
     JoinableGames[]
   >();
   const [submittingNewGame, setSubmittingNewGame] = useState<boolean>(false);
+
+  const [showHowToPlayModal, setShowHowToPlayModal] = useState(true);
 
   useEffect(() => {
     const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
@@ -167,38 +171,65 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
     );
   }, [joinAbleGameResponse, joinGameDisplayName]);
 
+  const handleShowModalClick = (e: any) => {
+    setShowHowToPlayModal(prev => true);
+  };
+
+  const handleCloseModalClick = (): void => {
+    setShowHowToPlayModal(prev => false);
+  };
+
+  const modal: JSX.Element | null = useMemo(() => {
+    return (
+      <HowToPlayModal
+        show={showHowToPlayModal}
+        handleCloseModal={handleCloseModalClick}
+      />
+    );
+  }, [showHowToPlayModal]);
+
   return (
     <main id="start-menu">
       <Container>
+        <Row id="how-to-play-row">
+          <Col>
+            <Button onClick={handleShowModalClick}>How to Play</Button>
+          </Col>
+        </Row>
         <Row>
-          <Col md={6}>{joinGameSection}</Col>
+          <Col md={6}>
+            <Card>{joinGameSection}</Card>
+          </Col>
           <Col md={6} id="create-new-game-form-col">
-            <Form onSubmit={handleNewLobbySubmit}>
-              <fieldset>
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="playerName">Player's Name</Form.Label>
-                  <Form.Control
-                    required
-                    ref={playerNameRef}
-                    id="playerName"
-                    placeholder="How name will appear in game"
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label htmlFor="lobbyName">Lobby Name</Form.Label>
-                  <Form.Control
-                    required
-                    ref={lobbyNameRef}
-                    id="lobbyName"
-                    placeholder="Text Friends will search for"
-                  />
-                </Form.Group>
-                <Button type="submit">Create Lobby</Button>
-              </fieldset>
-            </Form>
+            <Card>
+              <Form onSubmit={handleNewLobbySubmit}>
+                <fieldset>
+                  <Form.Group className="mb-3">
+                    <Form.Label htmlFor="playerName">Player's Name</Form.Label>
+                    <Form.Control
+                      required
+                      ref={playerNameRef}
+                      id="playerName"
+                      placeholder="How name will appear in game"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-3">
+                    <Form.Label htmlFor="lobbyName">Lobby Name</Form.Label>
+                    <Form.Control
+                      required
+                      ref={lobbyNameRef}
+                      id="lobbyName"
+                      placeholder="Text Friends will search for"
+                    />
+                  </Form.Group>
+                  <Button type="submit">Create Lobby</Button>
+                </fieldset>
+              </Form>
+            </Card>
           </Col>
         </Row>
       </Container>
+      {modal}
     </main>
   );
 };
