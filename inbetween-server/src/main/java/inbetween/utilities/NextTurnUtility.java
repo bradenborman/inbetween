@@ -26,7 +26,7 @@ public class NextTurnUtility {
         finalList.addAll(nextUp);
         finalList.addAll(wrappedAround);
 
-        boolean someoneHasPoints = playerList.stream().anyMatch(x -> x.getScore() > 0);
+        boolean someoneHasPoints = playerList.stream().anyMatch(x -> x.getScore() > 1);
 
         //If the next person up doesn't have any 1 point or less to bet, go to the next as long as there is someone else that has points
         if (finalList.size() > 1 && finalList.get(1).getScore() <= 1 && someoneHasPoints) {
