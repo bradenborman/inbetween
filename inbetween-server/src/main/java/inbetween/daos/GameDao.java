@@ -140,4 +140,11 @@ public class GameDao {
         ).orElse(0);
     }
 
+    public String selectIdOfPlayersTurn(int gameId) {
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        parameters.addValue("gameId", gameId);
+        return namedParameterJdbcTemplate.queryForObject("SELECT player_Id FROM PLAYERS WHERE " +
+                "game_joined = :gameId AND is_players_turn = true", parameters, String.class);
+    }
+
 }

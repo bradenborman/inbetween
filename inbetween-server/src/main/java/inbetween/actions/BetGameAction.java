@@ -37,26 +37,30 @@ public class BetGameAction implements GameAction {
             //Validate bet came from the user
 
             BetActionRequest betActionRequest = (BetActionRequest) actionRequest;
-
             int gameId = gameService.getGameIdByUUID(betActionRequest.getUuidOfGame());
-            betActionRequest.setGameId(gameId);
 
-            BetResult betResult = cardService.performNewBet(betActionRequest);
-            betResult.setUuidOfGame(betActionRequest.getUuidOfGame());
-            int potTotal = gameService.potTotalByGameId(gameId);
-            betResult.setPotTotal(potTotal);
+            boolean isValidUserMakingMove = gameService.validUserIdCommittingAction(gameId, betActionRequest.getUserBettingId());
 
+            if (isValidUserMakingMove) {
+                betActionRequest.setGameId(gameId);
 
-            logger.info(betResult.toString());
-
-            gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
-
-            //score change before grabbing player
-            betResult.setPlayerList(gameService.playerListByUUID(betActionRequest.getUuidOfGame()));
-            gameService.sendBetPerformedUpdate(betResult);
+                BetResult betResult = cardService.performNewBet(betActionRequest);
+                betResult.setUuidOfGame(betActionRequest.getUuidOfGame());
+                int potTotal = gameService.potTotalByGameId(gameId);
+                betResult.setPotTotal(potTotal);
 
 
-            return ResponseEntity.ok().build();
+                logger.info(betResult.toString());
+
+                gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
+
+                //score change before grabbing player
+                betResult.setPlayerList(gameService.playerListByUUID(betActionRequest.getUuidOfGame()));
+                gameService.sendBetPerformedUpdate(betResult);
+                return ResponseEntity.ok().build();
+            }
+
+
         }
 
         return ResponseEntity.badRequest().build();
