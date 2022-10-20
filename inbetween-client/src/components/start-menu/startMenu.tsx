@@ -31,7 +31,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
   >();
   const [submittingNewGame, setSubmittingNewGame] = useState<boolean>(false);
 
-  const [showHowToPlayModal, setShowHowToPlayModal] = useState(true);
+  const [showHowToPlayModal, setShowHowToPlayModal] = useState(false);
 
   useEffect(() => {
     const webSocket: WebSocket = new SockJS("/gs-guide-websocket");
