@@ -93,7 +93,7 @@
   }
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   #gamelobby {
     #game-table-wrapper {
       #bet-amount-input {
@@ -121,6 +121,20 @@
     #game-status-card {
       margin: 20px 0px;
       font-size: 0.7em;
+    }
+
+    #player-turn-order-card {
+      table#player-turn-order {
+        tr {
+          &.currentTurn::after {
+            width: 15px;
+            height: 15px;
+            position: absolute;
+            left: -18px;
+            top: 6px;
+          }
+        }
+      }
     }
   }
 }
