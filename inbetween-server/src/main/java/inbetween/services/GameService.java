@@ -76,7 +76,7 @@ public class GameService {
 
     public void setDefaultAnteForGameByPlayerCount(int gameId) {
         int playersInLobby = gameDao.countParticipatingPlayersInGame(gameId);
-        int potTotalToStart = playersInLobby * 300;
+        int potTotalToStart = playersInLobby * 200;
         gameDao.setDefaultAnteForGame(gameId, potTotalToStart);
     }
 
