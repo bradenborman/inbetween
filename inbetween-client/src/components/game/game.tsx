@@ -20,12 +20,19 @@ import GameStatusResponse from "../../models/gameStatusResponse";
 import GameUpdateStartTurn from "../../models/gameUpdateStartTurn";
 import PlayingCard from "../../models/playingCard";
 import BetResult from "../../models/betResult";
+import SplitResponse from "../../models/splitResponse";
 
 export interface GameProps {}
 
 export const Game: React.FC<GameProps> = (props: GameProps) => {
   const location = useLocation();
   const history = useHistory();
+
+  // const dummyCard: PlayingCard = {
+  //   cardId: "",
+  //   cardValue: "5",
+  //   suit: "CLUBS"
+  // }
 
   const bidAmountRef = useRef(null);
 
@@ -42,6 +49,15 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   const [middlePlayingCard, setMiddlePlayingCard] = useState<PlayingCard>();
   const [maxBidAllowed, setMaxBidAllowed] = useState<number>(0);
   const [cardsUntilReshuffle, setCardsUntilReshuffle] = useState<number>(52);
+
+  //Split turn vars
+  const [splitTurn, setSplitTurn] = useState<boolean>(false);
+  const [leftSplitPlayingCard, setLeftSplitPlayingCard] = useState<
+    PlayingCard
+  >();
+  const [rightSplitPlayingCard, setRightSplitPlayingCard] = useState<
+    PlayingCard
+  >();
 
   const [waitingAcknowledgeResults, setWaitingAcknowledgeResults] = useState<
     boolean
@@ -117,6 +133,19 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             setGameStatusResponse(prev => gameStatusResponse);
           }
         });
+        stomp.subscribe("/topic/split-card-incoming", (message: any) => {
+          let splitResponse: SplitResponse = JSON.parse(message.body);
+          if (splitResponse.gameUUID == gameUUID) {
+            setSplitTurn(true);
+            if (splitResponse.leftPlayingCard) {
+              setLeftSplitPlayingCard(prev => splitResponse.newEdgeCard);
+              setRightSplitPlayingCard(prev => undefined);
+            } else {
+              setLeftSplitPlayingCard(prev => undefined);
+              setRightSplitPlayingCard(prev => splitResponse.newEdgeCard);
+            }
+          }
+        });
         stomp.subscribe("/topic/bet-result", (message: any) => {
           let betResult: BetResult = JSON.parse(message.body);
           if (betResult.uuidOfGame == gameUUID) {
@@ -131,6 +160,9 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             message.body
           );
           if (gameUpdateSTartTurnMessage.uuid == gameUUID) {
+            setSplitTurn(false);
+            setLeftSplitPlayingCard(undefined);
+            setRightSplitPlayingCard(undefined);
             setPotTotal(gameUpdateSTartTurnMessage.potTotal);
             setLeftPlayingCard(gameUpdateSTartTurnMessage.leftPlayingCard);
             setRightPlayingCard(gameUpdateSTartTurnMessage.rightPlayingCard);
@@ -169,34 +201,56 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
   };
 
   const handlePassOfTurn = (e: any) => {
-    axios
-      .post("/perform:PASS_TURN", {
-        uuidToPass: gameUUID,
-        userId: userId,
-        passTurn: true
-      })
-      .then(response => {
-        if (response.status == 200) {
-          console.log("Started Game submitted 200");
-        }
-      });
+    e.preventDefault();
+    console.log(leftSplitPlayingCard);
+    if (splitTurn && leftSplitPlayingCard != undefined) {
+      axios
+        .post("/perform:PASS_SPLIT", {
+          uuid: gameUUID,
+          userId: userId,
+          passSplit: true
+        })
+        .then(response => {
+          if (response.status == 200) {
+            console.log("Started Game submitted 200");
+          }
+        });
+    } else {
+      axios
+        .post("/perform:PASS_TURN", {
+          uuidToPass: gameUUID,
+          userId: userId,
+          passTurn: true,
+          splitTurnPass: splitTurn
+        })
+        .then(response => {
+          if (response.status == 200) {
+            console.log("Started Game submitted 200");
+          }
+        });
+    }
   };
 
   const handleBid = (e: any) => {
     e.preventDefault();
-    const bidAmount = bidAmountRef.current.value;
-    if (bidAmount <= maxBidAllowed && bidAmount > 0) {
-      axios
-        .post("/perform:BET", {
-          userBettingId: userId,
-          wagerAmount: bidAmount,
-          uuidOfGame: gameUUID
-        })
-        .then(response => {
-          if (response.status == 200) {
-            setWaitingAcknowledgeResults(true);
-          }
-        });
+    if (!splitTurn) {
+      const bidAmount = bidAmountRef.current.value;
+      if (bidAmount <= maxBidAllowed && bidAmount > 0) {
+        axios
+          .post("/perform:BET", {
+            userBettingId: userId,
+            wagerAmount: bidAmount,
+            uuidOfGame: gameUUID
+          })
+          .then(response => {
+            if (response.status == 200) {
+              setWaitingAcknowledgeResults(true);
+            }
+          });
+      }
+    } else {
+      //Bid on the split card
+      alert("Need to setup bet on split card");
     }
   };
 
@@ -214,6 +268,19 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       });
   };
 
+  const handleSplitAction = (e: any) => {
+    axios
+      .post("/perform:SPLIT", {
+        performSplit: true,
+        uuid: gameUUID,
+        userSplitting: userId
+      })
+      .then(response => {
+        if (response.status == 200) {
+        }
+      });
+  };
+
   const isUsersTurn: boolean = useMemo(() => {
     if (playerList != undefined) {
       const players = playerList?.filter(player => player.playersTurn);
@@ -227,20 +294,54 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
       let src = `/img/cards/fronts/${leftPlayingCard.suit.toLowerCase()}_${
         leftPlayingCard.cardValue
       }.png`;
-      return <img src={src} />;
+      return (
+        <img
+          className={classNames({
+            blur: rightSplitPlayingCard != undefined && splitTurn
+          })}
+          src={src}
+        />
+      );
     }
     return <img src="/img/cards/backs/red2.png" />;
-  }, [leftPlayingCard]);
+  }, [leftPlayingCard, rightSplitPlayingCard]);
+
+  const leftSplitPlayingCardImg: JSX.Element | null = useMemo(() => {
+    if (leftSplitPlayingCard != undefined) {
+      let src = `/img/cards/fronts/${leftSplitPlayingCard.suit.toLowerCase()}_${
+        leftSplitPlayingCard.cardValue
+      }.png`;
+      return <img className="split-card left" src={src} />;
+    }
+    return null;
+  }, [splitTurn, leftSplitPlayingCard]);
 
   const rightPlayingCardImg: JSX.Element = useMemo(() => {
     if (rightPlayingCard != undefined) {
       let src = `/img/cards/fronts/${rightPlayingCard.suit.toLowerCase()}_${
         rightPlayingCard.cardValue
       }.png`;
-      return <img src={src} />;
+      return (
+        <img
+          className={classNames({
+            blur: leftSplitPlayingCard != undefined && splitTurn
+          })}
+          src={src}
+        />
+      );
     }
     return <img src="/img/cards/backs/red2.png" />;
-  }, [rightPlayingCard]);
+  }, [rightPlayingCard, leftSplitPlayingCard]);
+
+  const rightSplitPlayingCardImg: JSX.Element | null = useMemo(() => {
+    if (rightSplitPlayingCard != undefined) {
+      let src = `/img/cards/fronts/${rightSplitPlayingCard.suit.toLowerCase()}_${
+        rightSplitPlayingCard.cardValue
+      }.png`;
+      return <img className="split-card right" src={src} />;
+    }
+    return null;
+  }, [splitTurn, rightSplitPlayingCard]);
 
   const middlePlayingCardImg: JSX.Element = useMemo(() => {
     if (middlePlayingCard != undefined) {
@@ -305,27 +406,36 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
         gameStatusResponse.gameStatus == "IN_SESSION" &&
         !waitingAcknowledgeResults
       ) {
+        const betInput: JSX.Element = (
+          <form onSubmit={handleBid} id="bet-controls-wrapper">
+            <input
+              ref={bidAmountRef}
+              id="bet-amount-input"
+              type={"number"}
+              step={1}
+              min={1}
+              max={maxBidAllowed > potTotal ? potTotal : maxBidAllowed}
+              placeholder={maxBidAllowed.toString()}
+            />
+            <Button type="submit" variant="outline-secondary" id="bidButton">
+              Bet
+            </Button>
+          </form>
+        );
+
+        const splitButton: JSX.Element = (
+          <Button onClick={handleSplitAction} id="split-start-button">
+            Split
+          </Button>
+        );
+
         return (
           <Row>
             <Col>
-              <form onSubmit={handleBid} id="bet-controls-wrapper">
-                <input
-                  ref={bidAmountRef}
-                  id="bet-amount-input"
-                  type={"number"}
-                  step={1}
-                  min={1}
-                  max={maxBidAllowed > potTotal ? potTotal : maxBidAllowed}
-                  placeholder={maxBidAllowed.toString()}
-                />
-                <Button
-                  type="submit"
-                  variant="outline-secondary"
-                  id="bidButton"
-                >
-                  Bet
-                </Button>
-              </form>
+              {leftPlayingCard?.cardValue == rightPlayingCard?.cardValue &&
+              !splitTurn
+                ? splitButton
+                : betInput}
               <Button onClick={handlePassOfTurn}>PASS</Button>
             </Col>
           </Row>
@@ -364,7 +474,10 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
     playerList,
     maxBidAllowed,
     waitingAcknowledgeResults,
-    betResult
+    betResult,
+    splitTurn,
+    leftSplitPlayingCard,
+    rightSplitPlayingCard
   ]);
 
   return (
@@ -379,9 +492,15 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
                   <table id="game-board">
                     <tbody>
                       <tr id="cards">
-                        <td>{leftPlayingCardImg}</td>
+                        <td>
+                          {leftPlayingCardImg}
+                          {leftSplitPlayingCardImg}
+                        </td>
                         <td>{middlePlayingCardImg}</td>
-                        <td>{rightPlayingCardImg}</td>
+                        <td>
+                          {rightPlayingCardImg}
+                          {rightSplitPlayingCardImg}
+                        </td>
                       </tr>
                     </tbody>
                   </table>

@@ -36,7 +36,7 @@ public class NextTurnMessagingService {
         String uuid = gameService.getUUIDByGameId(gameId);
         GameUpdateStartTurn gameUpdateStartTurn = gameService.getLatestStartOfTurnUpdateByUUID(uuid);
 
-        logger.info("Sending Start of new turn update..");
+        logger.debug("Sending Start of new turn update..");
 
         //Send Message to everyone
         simpMessagingTemplate.convertAndSend("/topic/start-turn", gameUpdateStartTurn);
@@ -44,7 +44,7 @@ public class NextTurnMessagingService {
 
 
     public void updateNextTurn(int gameId) {
-        logger.info("Updating next turn for gameId: {}", gameId);
+        logger.debug("Updating next turn for gameId: {}", gameId);
         List<Player> playerListBefore = userDao.selectPlayersFromGame(gameId);
         Player currentTurnPlayer = userDao.findCurrentTurnPlayer(gameId);
 

@@ -11,8 +11,32 @@
     table#game-board {
       width: 100%;
       tr#cards {
+        td {
+          position: relative;
+        }
         img {
           width: 12vw;
+
+          &.blur {
+            filter: blur(5px);
+          }
+
+          &.split-card {
+            position: absolute;
+            animation: fan 0.5s;
+            animation-fill-mode: forwards;
+            animation-delay: 0.3s;
+            &.left {
+              left: 20px;
+              top: 10px;
+              transform: rotate(0deg);
+            }
+            &.right {
+              right: -20px;
+              top: 10px;
+              transform: rotate(0deg);
+            }
+          }
         }
 
         td:nth-child(1) {
@@ -42,6 +66,10 @@
         font-size: 1.3em;
         vertical-align: middle;
       }
+    }
+
+    #split-start-button {
+      margin-right: 10px;
     }
 
     #advance-btn {
@@ -136,5 +164,14 @@
         }
       }
     }
+  }
+}
+
+@keyframes fan {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(10deg);
   }
 }

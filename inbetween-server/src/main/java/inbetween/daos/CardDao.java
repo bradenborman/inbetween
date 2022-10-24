@@ -103,4 +103,13 @@ public class CardDao {
         return namedParameterJdbcTemplate.queryForObject("SELECT count(*) FROM QUEUED_CARDS " +
                 "WHERE game_id = :gameId AND has_been_drawn = false", params, Integer.class);
     }
+
+    public void updateSplitCard(int gameId, PlayingCard newEdgePlayingCard) {
+        String sql = "UPDATE GAME_TABLE set split_card = :splitCard WHERE game_id = :gameId";
+        MapSqlParameterSource gameIdParams = new MapSqlParameterSource();
+        gameIdParams.addValue("gameId", gameId);
+        gameIdParams.addValue("splitCard", newEdgePlayingCard.getCardId());
+        namedParameterJdbcTemplate.update(sql, gameIdParams);
+    }
+
 }

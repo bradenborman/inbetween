@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                 @JsonSubTypes.Type(value = AcknowledgeResultActionRequest.class),
                 @JsonSubTypes.Type(value = PassTurnActionRequest.class),
                 @JsonSubTypes.Type(value = JoinLobbyActionRequest.class),
+                @JsonSubTypes.Type(value = SplitActionRequest.class),
+                @JsonSubTypes.Type(value = PassSplitActionRequest.class)
         })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)

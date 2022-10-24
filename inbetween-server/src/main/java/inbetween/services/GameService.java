@@ -86,6 +86,23 @@ public class GameService {
         gameDao.applyScoreChangeToGamesPot(betActionRequest.getGameId(), (amountShifted) * -1);
     }
 
+    public void performSplitStartAndSendMessage(String uuid, boolean isLeftPlayingCard) {
+        logger.info("Starting split action..");
+        int gameId = getGameIdByUUID(uuid);
+        PlayingCard newEdgePlayingCard = cardDao.drawNextCard(gameId);
+
+        cardDao.updateSplitCard(gameId, newEdgePlayingCard);
+
+        SplitResponse splitResponse = new SplitResponse();
+        splitResponse.setGameUUID(uuid);
+        splitResponse.setNewEdgeCard(newEdgePlayingCard);
+        splitResponse.setLeftPlayingCard(isLeftPlayingCard);
+
+
+
+        simpMessagingTemplate.convertAndSend("/topic/split-card-incoming", splitResponse);
+    }
+
     public List<JoinableGame> findAllJoinableGames() {
         return gameDao.findAllJoinableGames();
     }

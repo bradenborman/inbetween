@@ -8,6 +8,8 @@ public enum UserGameAction {
     PASS_TURN,
     BET,
     ACKNOWLEDGE_RESULTS,
+    SPLIT,
+    PASS_SPLIT,
     LEAVE_GAME;
 
 }

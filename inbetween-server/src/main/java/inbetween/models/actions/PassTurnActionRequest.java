@@ -29,4 +29,5 @@ public class PassTurnActionRequest extends ActionRequest {
     public void setPassTurn(boolean passTurn) {
         this.passTurn = passTurn;
     }
+
 }
