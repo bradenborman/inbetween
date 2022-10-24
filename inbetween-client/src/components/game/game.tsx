@@ -223,18 +223,30 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
           passTurn: true,
           splitTurnPass: splitTurn
         })
-        .then(response => {
-          if (response.status == 200) {
-            console.log("Started Game submitted 200");
-          }
-        });
+        .then(response => {});
     }
   };
 
   const handleBid = (e: any) => {
     e.preventDefault();
-    if (!splitTurn) {
-      const bidAmount = bidAmountRef.current.value;
+    const bidAmount = bidAmountRef.current.value;
+
+    if (splitTurn) {
+      axios
+        .post("/perform:SPLIT_BET", {
+          uuid: gameUUID,
+          userId: userId,
+          splitBid: true,
+          wagerAmount: bidAmount,
+          leftCard: leftSplitPlayingCard != undefined,
+          rightCard: rightSplitPlayingCard != undefined
+        })
+        .then(response => {
+          if (response.status == 200) {
+            setWaitingAcknowledgeResults(true);
+          }
+        });
+    } else {
       if (bidAmount <= maxBidAllowed && bidAmount > 0) {
         axios
           .post("/perform:BET", {
@@ -248,9 +260,6 @@ export const Game: React.FC<GameProps> = (props: GameProps) => {
             }
           });
       }
-    } else {
-      //Bid on the split card
-      alert("Need to setup bet on split card");
     }
   };
 

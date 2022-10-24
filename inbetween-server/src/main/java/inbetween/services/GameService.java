@@ -4,7 +4,6 @@ import inbetween.daos.CardDao;
 import inbetween.daos.GameDao;
 import inbetween.daos.UserDao;
 import inbetween.models.*;
-import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.GameStatus;
 import inbetween.models.enums.PlayingCardColumnName;
 import inbetween.models.enums.UserRole;
@@ -81,9 +80,9 @@ public class GameService {
     }
 
     @Transactional
-    public void performScoreExchange(BetActionRequest betActionRequest, int amountShifted) {
-        userDao.applyScoreChangeToUser(betActionRequest.getUserBettingId(), amountShifted);
-        gameDao.applyScoreChangeToGamesPot(betActionRequest.getGameId(), (amountShifted) * -1);
+    public void performScoreExchange(int gameId, String userId, int amountShifted) {
+        userDao.applyScoreChangeToUser(userId, amountShifted);
+        gameDao.applyScoreChangeToGamesPot(gameId, (amountShifted) * -1);
     }
 
     public void performSplitStartAndSendMessage(String uuid, boolean isLeftPlayingCard) {
@@ -97,7 +96,6 @@ public class GameService {
         splitResponse.setGameUUID(uuid);
         splitResponse.setNewEdgeCard(newEdgePlayingCard);
         splitResponse.setLeftPlayingCard(isLeftPlayingCard);
-
 
 
         simpMessagingTemplate.convertAndSend("/topic/split-card-incoming", splitResponse);

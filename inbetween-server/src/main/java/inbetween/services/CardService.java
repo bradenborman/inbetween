@@ -4,7 +4,6 @@ import inbetween.daos.CardDao;
 import inbetween.daos.UserDao;
 import inbetween.models.BetResult;
 import inbetween.models.PlayingCard;
-import inbetween.models.actions.BetActionRequest;
 import inbetween.models.enums.PlayingCardColumnName;
 import inbetween.utilities.BetResultUtility;
 import inbetween.utilities.DeckUtility;
@@ -30,17 +29,26 @@ public class CardService {
         cardDao.loadCardToBoard(gameId, PlayingCardColumnName.RIGHT, drawNextCard(gameId));
     }
 
-    public BetResult performNewBet(BetActionRequest betActionRequest) {
-        int gameId = betActionRequest.getGameId();
-
+    public BetResult performNewBet(int gameId, int wagerAmount) {
         PlayingCard playingCardL = cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.LEFT);
         PlayingCard playingCardR = cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.RIGHT);
 
+        return performNewBet(gameId, wagerAmount, playingCardL, playingCardR);
+    }
+
+    public BetResult performNewSplitBet(int gameId, int wagerAmount, PlayingCardColumnName edgeColumn) {
+        PlayingCard playingCard1 = cardDao.selectCardShowingInGame(gameId, edgeColumn);
+        PlayingCard playingCard2 = cardDao.selectCardShowingInGame(gameId, PlayingCardColumnName.SPLIT_CARD);
+
+        return performNewBet(gameId, wagerAmount, playingCard1, playingCard2);
+    }
+
+    public BetResult performNewBet(int gameId, int wagerAmount, PlayingCard playingCardL, PlayingCard playingCardR) {
         PlayingCard playingCardM = drawNextCard(gameId);
         cardDao.loadCardToBoard(gameId, PlayingCardColumnName.MIDDLE, playingCardM);
 
         return BetResultUtility.deriveBetResult(
-                playingCardL, playingCardR, playingCardM, betActionRequest.getWagerAmount()
+                playingCardL, playingCardR, playingCardM, wagerAmount
         );
     }
 
@@ -56,5 +64,9 @@ public class CardService {
 
     public void clearMiddleCard(int gameId) {
         cardDao.clearCard(gameId, PlayingCardColumnName.MIDDLE);
+    }
+
+    public void clearSplitCard(int gameId) {
+        cardDao.clearCard(gameId, PlayingCardColumnName.SPLIT_CARD);
     }
 }

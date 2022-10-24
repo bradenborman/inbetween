@@ -1,6 +1,6 @@
 package inbetween.models.actions;
 
-public class PassSplitActionRequest extends ActionRequest {
+public class SplitPassActionRequest extends ActionRequest {
 
     private String uuid;
     private String userId;

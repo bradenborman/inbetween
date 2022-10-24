@@ -14,7 +14,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
                 @JsonSubTypes.Type(value = PassTurnActionRequest.class),
                 @JsonSubTypes.Type(value = JoinLobbyActionRequest.class),
                 @JsonSubTypes.Type(value = SplitActionRequest.class),
-                @JsonSubTypes.Type(value = PassSplitActionRequest.class)
+                @JsonSubTypes.Type(value = SplitPassActionRequest.class),
+                @JsonSubTypes.Type(value = SplitBetActionRequest.class)
         })
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonTypeInfo(use = JsonTypeInfo.Id.DEDUCTION)

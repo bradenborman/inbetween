@@ -44,7 +44,7 @@ public class BetGameAction implements GameAction {
             if (isValidUserMakingMove) {
                 betActionRequest.setGameId(gameId);
 
-                BetResult betResult = cardService.performNewBet(betActionRequest);
+                BetResult betResult = cardService.performNewBet(gameId, betActionRequest.getWagerAmount());
                 betResult.setUuidOfGame(betActionRequest.getUuidOfGame());
                 int potTotal = gameService.potTotalByGameId(gameId);
                 betResult.setPotTotal(potTotal);
@@ -52,7 +52,7 @@ public class BetGameAction implements GameAction {
 
                 logger.info(betResult.toString());
 
-                gameService.performScoreExchange(betActionRequest, betResult.getAmountShifted());
+                gameService.performScoreExchange(betActionRequest.getGameId(), betActionRequest.getUserBettingId(), betResult.getAmountShifted());
 
                 //score change before grabbing player
                 betResult.setPlayerList(gameService.playerListByUUID(betActionRequest.getUuidOfGame()));

@@ -1,7 +1,7 @@
 package inbetween.actions;
 
 import inbetween.models.actions.ActionRequest;
-import inbetween.models.actions.PassSplitActionRequest;
+import inbetween.models.actions.SplitPassActionRequest;
 import inbetween.models.enums.UserGameAction;
 import inbetween.services.GameService;
 import org.springframework.http.ResponseEntity;
@@ -28,8 +28,8 @@ public class PassSplitGameAction implements GameAction {
     @Override
     public ResponseEntity<?> perform(ActionRequest actionRequest) {
 
-        if (actionRequest instanceof PassSplitActionRequest) {
-            PassSplitActionRequest splitActionRequest = (PassSplitActionRequest) actionRequest;
+        if (actionRequest instanceof SplitPassActionRequest) {
+            SplitPassActionRequest splitActionRequest = (SplitPassActionRequest) actionRequest;
 
             //Passing on left Card Split - load the right split
             gameService.performSplitStartAndSendMessage(splitActionRequest.getUuid(), false);

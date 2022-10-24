@@ -38,6 +38,7 @@ public class AcknowledgeResultAction implements GameAction {
 
             cardService.revealTwoNewSideCards(gameId);
             cardService.clearMiddleCard(gameId);
+            cardService.clearSplitCard(gameId);
             nextTurnMessagingService.updateNextTurnAndSendMessage(gameId, true);
         }
 

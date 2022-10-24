@@ -9,6 +9,7 @@ public enum UserGameAction {
     BET,
     ACKNOWLEDGE_RESULTS,
     SPLIT,
+    SPLIT_BET,
     PASS_SPLIT,
     LEAVE_GAME;
 
