@@ -1,6 +1,13 @@
 #start-menu {
   margin-top: 50px;
 
+  #join-lobby-card {
+    span.title {
+      font-family: "Karla", sans-serif;
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
+  }
   #how-to-play-row {
     margin: 50px 0px;
   }
@@ -22,8 +29,14 @@
       }
     }
   }
+
   #create-new-game-form-col {
     margin-left: 7vw;
+    span.title {
+      font-family: "Karla", sans-serif;
+      font-size: 1.4em;
+      margin-bottom: 10px;
+    }
   }
 }
 

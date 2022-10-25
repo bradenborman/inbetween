@@ -141,8 +141,8 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
     if (joinAbleGameResponse == undefined || joinAbleGameResponse.length == 0) {
       return (
         <>
-          There are 0 joinable lobbies to join at this time. Please create one
-          one or wait for one to be created.
+          Oh no! There aren't any open games. <br />
+          Please create one one or wait for one to be created.
         </>
       );
     }
@@ -191,17 +191,21 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
   return (
     <main id="start-menu">
       <Container>
-        <Row id="how-to-play-row">
-          <Col>
-            <Button onClick={handleShowModalClick}>How to Play</Button>
-          </Col>
-        </Row>
         <Row>
-          <Col md={6}>
-            <Card>{joinGameSection}</Card>
+          <Col id="join-lobby-card" md={6}>
+            <Card>
+              <span className="title">Join a game</span>
+              {joinGameSection}
+              <Row id="how-to-play-row">
+                <Col>
+                  <Button onClick={handleShowModalClick}>How to Play</Button>
+                </Col>
+              </Row>
+            </Card>
           </Col>
           <Col md={6}>
             <Card id="create-new-game-form-col">
+              <span className="title">Start a new lobby</span>
               <Form onSubmit={handleNewLobbySubmit}>
                 <fieldset>
                   <Form.Group className="mb-3">
@@ -210,7 +214,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
                       required
                       ref={playerNameRef}
                       id="playerName"
-                      placeholder="How name will appear in game"
+                      placeholder="In-game display name"
                     />
                   </Form.Group>
                   <Form.Group className="mb-3">
@@ -219,7 +223,7 @@ export const StartMenu: React.FC<StartMenuProps> = (props: StartMenuProps) => {
                       required
                       ref={lobbyNameRef}
                       id="lobbyName"
-                      placeholder="Text Friends will search for"
+                      placeholder="How friends can find the game"
                     />
                   </Form.Group>
                   <Button type="submit">Create Lobby</Button>
